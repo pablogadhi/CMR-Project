@@ -1,2 +1,2 @@
 # CMR-Project
-Sistema CMR hecha en Django para el primer proyecto de Bases de Datos
+Sistema CMR hecho en Django para el primer proyecto de Bases de Datos
