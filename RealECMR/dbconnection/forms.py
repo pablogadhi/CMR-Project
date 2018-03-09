@@ -1,0 +1,12 @@
+from django import forms
+from django.db import connection
+
+class QueryForm(forms.Form):
+    query = forms.CharField(label='Query:', max_length=500)
+
+    def send(self):
+        data = self.cleaned_data
+        cursor = connection.cursor()
+        cursor.execute(data.get("query"))
+        return cursor.fetchall()
+        # print(data.get("query"))
