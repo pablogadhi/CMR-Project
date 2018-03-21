@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 
 class Cliente(models.Model):
     id = models.AutoField(primary_key=True)
