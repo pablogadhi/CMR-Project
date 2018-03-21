@@ -2,7 +2,36 @@ from django.http import HttpResponse
 from django.template import loader
 from .forms import QueryForm
 from django.shortcuts import render
+from .models import Cliente, Propietario,Comprador, Propiedad, Intermediario
+from django.views import generic
 
+def index(request):
+    num_propietarios=Propietario.objects.all().count()
+    num_compradores=Comprador.objects.all().count()
+    num_propiedades=Propiedad.objects.all().count()
+    num_intermediarios=Intermediario.objects.all().count()
+    return render (
+        request,
+        'index.html',
+        context={'num_propietarios':num_propietarios,'num_compradores':num_compradores,'num_propiedades':num_propiedades,'num_intermediarios':num_intermediarios},
+    )
+
+class PropiedadListView(generic.ListView):
+    """
+    Generic class-based view for a list of propieties.
+    """
+    model = Propiedad
+    paginate_by = 10
+
+class PropiedadDetailView(generic.ListView):
+    """
+    Generic class-based detail for a list of propieties.
+    """
+    model = Propiedad
+
+
+
+"""
 def index(request):
     # template = loader.get_template('dbconnection/index.html')
     if request.method == 'POST':
@@ -15,3 +44,4 @@ def index(request):
         form = QueryForm()
     return render(request, 'dbconnection/index.html', {'form': form})
     # return HttpResponse(template.render(context, request))
+"""

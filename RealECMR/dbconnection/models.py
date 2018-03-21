@@ -15,6 +15,9 @@ class Cliente(models.Model):
     def __str__(self):
        return self.nombre
 
+    def get_absolute_url(self):
+        return reverse('detalle-cliente',args=[str(self.id)])
+
 class Propietario(models.Model):
     idP = models.ForeignKey(Cliente, on_delete=models.CASCADE)
     # nombreP = models.ForeignKey(Cliente, on_delete=models.CASCADE)
@@ -29,6 +32,7 @@ class Comprador(models.Model):
     presupuesto = models.FloatField()
 
 class Propiedad(models.Model):
+    id = models.AutoField(primary_key=True)
     direccion = models.CharField(max_length=50)
     valuacion = models.FloatField()
     tipo = models.CharField(max_length=20)

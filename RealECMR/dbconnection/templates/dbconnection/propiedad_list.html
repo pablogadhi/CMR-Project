@@ -1,0 +1,19 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+    <h1>Lista de Propiedades</h1>
+
+    {% if propiedad_list %}
+    <ul>
+
+      {% for propiedad in propiedad_list %}
+      <li>
+        <a href="{{ propiedad.get_absolute_url }}">({{ propiedad.id }})</a> {{propiedad.direccion}}
+      </li>
+      {% endfor %}
+
+    </ul>
+    {% else %}
+      <p>No hay propiedades registradas.</p>
+    {% endif %}       
+{% endblock %}
