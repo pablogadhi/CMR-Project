@@ -23,10 +23,10 @@
       {% block sidebar %}
       <ul class="sidebar-nav">
           <li><a href="{% url 'index' %}">Home</a></li>
-          <li><a href="">Mostrar Propietarios</a></li>
-          <li><a href="">Mostrar Compradores</a></li>
+          <li><a href="{% url 'propiedades' %}">Mostrar Propietarios</a></li>
+          <li><a href="{% url 'compradores' %}">Mostrar Compradores</a></li>
           <li><a href="{% url 'propiedades' %}">Mostrar Propiedades</a></li>
-          <li><a href="">Mostrar intermediarios</a></li>
+          <li><a href="{% url 'intermediarios' %}">Mostrar intermediarios</a></li>
       </ul>
      {% endblock %}
       </div>

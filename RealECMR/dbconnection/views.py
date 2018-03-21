@@ -16,16 +16,37 @@ def index(request):
         context={'num_propietarios':num_propietarios,'num_compradores':num_compradores,'num_propiedades':num_propiedades,'num_intermediarios':num_intermediarios},
     )
 
+class PropetarioListView(generic.ListView):
+    """
+    Generic class-based view for a list of Propietario.
+    """
+    model = Propietario
+    paginate_by = 10
+
+class IntermediarioListView(generic.ListView):
+    """
+    Generic class-based view for a list of Intermediario.
+    """
+    model = Intermediario
+    paginate_by = 10
+
+class CompradorListView(generic.ListView):
+    """
+    Generic class-based view for a list of Comprador.
+    """
+    model = Comprador
+    paginate_by = 10
+
 class PropiedadListView(generic.ListView):
     """
-    Generic class-based view for a list of propieties.
+    Generic class-based view for a list of Propiedad.
     """
     model = Propiedad
     paginate_by = 10
 
 class PropiedadDetailView(generic.ListView):
     """
-    Generic class-based detail for a list of propieties.
+    Generic class-based detail for a list of Propiedad.
     """
     model = Propiedad
 

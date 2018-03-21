@@ -1,0 +1,19 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+    <h1>Lista de Intermediarios</h1>
+
+    {% if intermediario_list %}
+    <ul>
+
+      {% for intermediario in intermediario_list %}
+      <li>
+        <a href="{{ intermediario.get_absolute_url }}">({{ intermediario.idI }})</a> {{intermediario.nombreI}}
+      </li>
+      {% endfor %}
+
+    </ul>
+    {% else %}
+      <p>No hay intermediarios registrados.</p>
+    {% endif %}       
+{% endblock %}
