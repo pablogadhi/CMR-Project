@@ -3,49 +3,57 @@ from django.urls import reverse
 
 class Cliente(models.Model):
     id = models.AutoField(primary_key=True)
-    nombre = models.CharField(max_length=35)
+    nombre = models.CharField(max_length=50, null=True)
     edad = models.IntegerField(default=0)
     telefono = models.IntegerField(default=0)
-    sexo = models.CharField(max_length=10)
-    rol = models.CharField(max_length=15)
-    # foto = models.ImageField()
-    fechaInicio = models.DateField()
-    activo = models.BooleanField()
-    mail = models.EmailField()
+    sexo = models.CharField(max_length=10, default="femenino")
+    rol = models.CharField(max_length=15, default="comprador")
+    foto = models.ImageField(null=True)
+    fechaInicio = models.DateField(null=True)
+    activo = models.BooleanField(default=True)
+    mail = models.EmailField(null=True)
     
     def __str__(self):
        return self.nombre
 
     def get_absolute_url(self):
         return reverse('detalle-cliente',args=[str(self.id)])
-
-class Propietario(models.Model):
-    idP = models.ForeignKey(Cliente, on_delete=models.CASCADE)
-    # nombreP = models.ForeignKey(Cliente, on_delete=models.CASCADE)
-    bienPoseido = models.CharField(max_length=20)
-    direccion = models.CharField(max_length=50)
-
-class Comprador(models.Model):
-    idC = models.ForeignKey(Cliente, on_delete=models.CASCADE)
-    # nombreC = models.ForeignKey(Cliente, on_delete=models.CASCADE)
-    zona = models.IntegerField(default=0)
-    tipoPropiedad = models.CharField(max_length=20)
-    presupuesto = models.FloatField()
+    
+    class Meta:
+        abstract = True
 
 class Propiedad(models.Model):
     id = models.AutoField(primary_key=True)
-    direccion = models.CharField(max_length=50)
-    valuacion = models.FloatField()
-    tipo = models.CharField(max_length=20)
-    informacion = models.CharField(max_length=100)
-    # fotos = models.ImageField()
-    tamano = models.DecimalField(decimal_places=2, max_digits=8)
+    direccion = models.CharField(max_length=50, null=True)
+    valuacion = models.FloatField(default=0.0)
+    tipo = models.CharField(max_length=20, default="casa")
+    informacion = models.CharField(max_length=500, null=True)
+    foto = models.ImageField(null=True)
+    tamano = models.DecimalField(decimal_places=2, max_digits=8, default=0.00)
+
+class Propietario(Cliente):
+    bienPoseido = models.ForeignKey(Propiedad, on_delete=models.CASCADE)
+    direccion = models.CharField(max_length=50, null=True)
+
+class Comprador(Cliente):
+    zona = models.IntegerField(default=0)
+    tipoPropiedad = models.CharField(max_length=20, default="casa")
+    presupuesto = models.FloatField(default=0.0)
 
 class Intermediario(models.Model):
-    idI = models.ForeignKey(Cliente, on_delete=models.CASCADE)
-    comision = models.DecimalField(decimal_places=2, max_digits=8)
+    id = models.AutoField(primary_key=True)
+    comision = models.DecimalField(decimal_places=2, max_digits=8, default=0.00)
     experiencia = models.IntegerField(default=0)
-    nombreI = models.CharField(max_length=35)
+    nombre = models.CharField(max_length=35, null=True)
+
+class CamposAdicionales(models.Model):
+    id = models.AutoField(primary_key=True)
+    nombre = models.CharField(max_length=50, null=True)
+    tipo = models.CharField(max_length=35, default="string")
+    tabla = models.IntegerField(default=0)
+
+class ValoresAdicionales(models.Model):
+    id_campo = models.ForeignKey(CamposAdicionales, on_delete=models.CASCADE)
+    id_tupla = models.IntegerField(default=0)
+    valor = models.CharField(max_length=35, default="")
     
- 
-# Create your models here.
