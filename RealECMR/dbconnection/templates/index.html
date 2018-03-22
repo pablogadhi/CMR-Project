@@ -1,0 +1,18 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+<h1>Página de inicio RealCMR</h1>
+
+  <p>Bienvenido a la <em>página de inicio</em>, en esta página web se ha modelado varios modelos relacionados con Bienes raices.</p>
+
+<h2>Datos Actuales</h2>
+
+  <p>Las tablas tienen las siguientes cantidades:</p>
+  <ul>
+    <li><strong>Propietarios:</strong> {{ num_propietarios }}</li>
+    <li><strong>Compradores:</strong> {{ num_compradores }}</li>
+    <li><strong>Propiedades:</strong> {{ num_propiedades }}</li>
+    <li><strong>Intermediarios:</strong> {{ num_intermediarios }}</li>
+  </ul>
+
+{% endblock %}

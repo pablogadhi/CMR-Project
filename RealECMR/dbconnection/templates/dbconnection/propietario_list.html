@@ -1,0 +1,19 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+    <h1>Lista de Propietarios</h1>
+
+    {% if propietario_list %}
+    <ul>
+
+      {% for propietario in propietario_list %}
+      <li>
+        <a href="{{ propietario.get_absolute_url }}">({{ propietario.idP }})</a> {{propietario.direccion}}
+      </li>
+      {% endfor %}
+
+    </ul>
+    {% else %}
+      <p>No hay propietario registrados.</p>
+    {% endif %}       
+{% endblock %}

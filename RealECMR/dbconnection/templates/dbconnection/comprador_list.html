@@ -1,0 +1,19 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+    <h1>Lista de Compradores</h1>
+
+    {% if comprador_list %}
+    <ul>
+
+      {% for comprador in comprador_list %}
+      <li>
+        <a href="{{ comprador.get_absolute_url }}">({{ comprador.idC }})</a> {{comprador.presupuesto}}
+      </li>
+      {% endfor %}
+
+    </ul>
+    {% else %}
+      <p>No hay compradores registrados.</p>
+    {% endif %}       
+{% endblock %}
