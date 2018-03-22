@@ -4,6 +4,7 @@ from .forms import QueryForm
 from django.shortcuts import render
 from .models import Cliente, Propietario,Comprador, Propiedad, Intermediario
 from django.views import generic
+from .dummy import generateDummy 
 
 def index(request):
     num_propietarios=Propietario.objects.all().count()
@@ -15,6 +16,10 @@ def index(request):
         'index.html',
         context={'num_propietarios':num_propietarios,'num_compradores':num_compradores,'num_propiedades':num_propiedades,'num_intermediarios':num_intermediarios},
     )
+
+def dummy(request):
+    generateDummy()
+    return HttpResponse("Dummy Generado!")
 
 class PropetarioListView(generic.ListView):
     """
