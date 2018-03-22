@@ -5,13 +5,22 @@
 
     {% if intermediario_list %}
     <ul>
-
+      <table>
+        <tr>
+          <th>ID</th>
+          <th>Nombre</th>
+          <th>Experiencia</th>
+          <th>Comision</th>
+        </tr>
       {% for intermediario in intermediario_list %}
-      <li>
-        <a href="{{ intermediario.get_absolute_url }}">({{ intermediario.idI }})</a> {{intermediario.nombreI}}
-      </li>
+        <tr>
+          <td>{{intermediario.id}}</td>
+          <td>{{intermediario.nombre}}</td>
+          <td>{{intermediario.experiencia}}</td>
+          <td>{{intermediario.comision}}</td>
+        </tr>
       {% endfor %}
-
+    </table>
     </ul>
     {% else %}
       <p>No hay intermediarios registrados.</p>

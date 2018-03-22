@@ -5,13 +5,28 @@
 
     {% if propiedad_list %}
     <ul>
-
+      <table>
+        <tr>
+          <th>ID</th>
+          <th>Direccion</th>
+          <th>Tipo</th>
+          <th>Tamaño</th>
+          <th>Valuacion</th>
+          <th>Informacion</th>
+          <th>Foto</th>
+        </tr>
       {% for propiedad in propiedad_list %}
-      <li>
-        <a href="{{ propiedad.get_absolute_url }}">({{ propiedad.id }})</a> {{propiedad.direccion}}
-      </li>
+      <tr>
+          <td>{{propiedad.id}}</td>
+          <td>{{propiedad.direccion}}</td>
+          <td>{{propiedad.tipo}}</td>
+          <td>{{propiedad.tamano}}</td>
+          <td>{{propiedad.valuacion}}</td>
+          <td>{{propiedad.informacion}}</td>
+          <td>{{propiedad.foto}}</td>
+        </tr>
       {% endfor %}
-
+      </table>
     </ul>
     {% else %}
       <p>No hay propiedades registradas.</p>

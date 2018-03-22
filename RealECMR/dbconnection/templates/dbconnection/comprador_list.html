@@ -5,13 +5,38 @@
 
     {% if comprador_list %}
     <ul>
-
+      <table>
+        <tr>
+          <th>ID</th>
+          <th>Activo</th>
+          <th>Nombre</th>
+          <th>Sexo</th>
+          <th>Edad</th>
+          <th>Telefono</th>
+          <th>Correo</th>
+          <th>FechaInicio</th>
+          <th>Busca</th>
+          <th>Cerca de</th>
+          <th>Presupuesto</th>
+          <th>Foto</th>
+        </tr>
       {% for comprador in comprador_list %}
-      <li>
-        <a href="{{ comprador.get_absolute_url }}">({{ comprador.idC }})</a> {{comprador.presupuesto}}
-      </li>
+        <tr>
+          <td>{{comprador.id}}</td>
+          <td>{{comprador.activo}}</td>
+          <td>{{comprador.nombre}}</td>
+          <td>{{comprador.sexo}}</td>
+          <td>{{comprador.edad}}</td>
+          <td>{{comprador.telefono}}</td>
+          <td>{{comprador.mail}}</td>
+          <td>{{comprador.fechaInicio}}</td>
+          <td>{{comprador.tipoPropiedad}}</td>
+          <td>{{comprador.zona}}</td>
+          <td>{{comprador.presupuesto}}</td>
+          <td>{{comprador.foto}}</td>
+        </tr>
       {% endfor %}
-
+      </table>
     </ul>
     {% else %}
       <p>No hay compradores registrados.</p>

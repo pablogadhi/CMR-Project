@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   
   {% block title %}<title>Contenido:</title>{% endblock %}
@@ -12,6 +13,24 @@
   <!-- Add additional CSS in static file -->
   {% load static %}
   <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+  <style>
+      table {
+          font-family: arial, sans-serif;
+          border-collapse: collapse;
+          width: 100%;
+      }
+
+      td, th {
+          border: 1px solid #dddddd;
+          text-align: left;
+          padding: 8px;
+      }
+
+      tr:nth-child(even) {
+          background-color: #C7F2CF;
+      }
+    </style>
+
 </head>
 
 <body>
@@ -23,7 +42,7 @@
       {% block sidebar %}
       <ul class="sidebar-nav">
           <li><a href="{% url 'index' %}">Home</a></li>
-          <li><a href="{% url 'propiedades' %}">Mostrar Propietarios</a></li>
+          <li><a href="{% url 'propietarios' %}">Mostrar Propietarios</a></li>
           <li><a href="{% url 'compradores' %}">Mostrar Compradores</a></li>
           <li><a href="{% url 'propiedades' %}">Mostrar Propiedades</a></li>
           <li><a href="{% url 'intermediarios' %}">Mostrar intermediarios</a></li>
