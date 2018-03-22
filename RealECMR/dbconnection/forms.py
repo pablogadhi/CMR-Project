@@ -10,3 +10,5 @@ class QueryForm(forms.Form):
         cursor.execute(data.get("query"))
         return cursor.fetchall()
         # print(data.get("query"))
+
+# class DummyForm(forms.Form):
