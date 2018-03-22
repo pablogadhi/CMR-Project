@@ -30,6 +30,9 @@ class Propiedad(models.Model):
     informacion = models.CharField(max_length=500, null=True)
     foto = models.ImageField(null=True)
     tamano = models.DecimalField(decimal_places=2, max_digits=8, default=0.00)
+    
+    def __str__(self):
+       return self.id
 
 class Propietario(Cliente):
     bienPoseido = models.ForeignKey(Propiedad, on_delete=models.CASCADE)
@@ -45,6 +48,9 @@ class Intermediario(models.Model):
     comision = models.DecimalField(decimal_places=2, max_digits=8, default=0.00)
     experiencia = models.IntegerField(default=0)
     nombre = models.CharField(max_length=35, null=True)
+    
+    def __str__(self):
+       return self.nombre
 
 class CamposAdicionales(models.Model):
     id = models.AutoField(primary_key=True)
