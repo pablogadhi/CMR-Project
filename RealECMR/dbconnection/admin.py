@@ -5,4 +5,6 @@ admin.site.register(Propiedad)
 admin.site.register(Propietario)
 admin.site.register(Intermediario)
 admin.site.register(Comprador)
+admin.site.register(CamposAdicionales)
+admin.site.register(ValoresAdicionales)
 # Register your models here.
