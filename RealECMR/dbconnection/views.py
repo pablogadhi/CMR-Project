@@ -1,7 +1,7 @@
 from django.http import HttpResponse
 from django.template import loader
-from .forms import AgregarCampoForm
-from django.shortcuts import render
+from .forms import AgregarCampoForm, AgregarPropiedad
+from django.shortcuts import render, get_object_or_404
 from .models import Cliente, Propietario, Comprador, Propiedad, Intermediario, CamposAdicionales
 from django.views import generic
 from .dummy import generateDummy
@@ -44,36 +44,53 @@ class PropetarioListView(generic.ListView):
     paginate_by = 10
 
 
-class IntermediarioListView(generic.ListView):
+class IntermediarioListView(generic.edit.FormMixin, generic.ListView):
     """
     Generic class-based view for a list of Intermediario.
     """
     model = Intermediario
     paginate_by = 10
+    form_class = AgregarCampoForm
+
+    def get_success_url(self):
+        return reverse('intermediarios')
+
+    def get_context_data(self, **kwargs):
+        cursor = connection.cursor()
+        cursor.execute(
+            "SELECT * FROM dbconnection_camposadicionales as ca WHERE ca.tabla = 3")
+        context = super().get_context_data(**kwargs)
+        context['campos_adicionales'] = dictfetchall(cursor)
+        context['form'] = self.get_form()
+        return context
+
+    def post(self, request, *args, **kwargs):
+        form = self.get_form()
+        if form.is_valid():
+            form.agregarCampo(3)
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+
+    def form_valid(self, form):
+        return super().form_valid(form)
 
 
-class CompradorListView(generic.ListView):
+class CompradorListView(generic.edit.FormMixin, generic.ListView):
     """
     Generic class-based view for a list of Comprador.
     """
     model = Comprador
     paginate_by = 10
-
-
-class PropiedadListView(generic.edit.FormMixin, generic.ListView):
-    """
-    Generic class-based view for a list of Propiedad.
-    """
-    model = Propiedad
-    paginate_by = 10
     form_class = AgregarCampoForm
 
     def get_success_url(self):
-        return reverse('index')
+        return reverse('compradores')
 
     def get_context_data(self, **kwargs):
         cursor = connection.cursor()
-        cursor.execute("SELECT * FROM dbconnection_camposadicionales as ca WHERE ca.tabla = 0")
+        cursor.execute(
+            "SELECT * FROM dbconnection_camposadicionales as ca WHERE ca.tabla = 2")
         context = super().get_context_data(**kwargs)
         context['campos_adicionales'] = dictfetchall(cursor)
         context['form'] = self.get_form()
@@ -87,9 +104,53 @@ class PropiedadListView(generic.edit.FormMixin, generic.ListView):
             return self.form_invalid(form)
 
     def form_valid(self, form):
-        form.agregarCampo()
+        form.agregarCampo(2)
         return super().form_valid(form)
+
+
+class PropiedadListView(generic.edit.FormMixin, generic.ListView):
+    """
+    Generic class-based view for a list of Propiedad.
+    """
+    model = Propiedad
+    paginate_by = 10
+    form_class = AgregarCampoForm
+    second_form_class = AgregarPropiedad
+
+    def get_success_url(self):
+        return reverse('propiedades')
+
+    def get_context_data(self, **kwargs):
+        cursor = connection.cursor()
+        cursor.execute(
+            "SELECT * FROM dbconnection_camposadicionales as ca WHERE ca.tabla = 0")
+        context = super().get_context_data(**kwargs)
+        context['campos_adicionales'] = dictfetchall(cursor)
+        context['form'] = self.get_form()
+        context['second_form'] = self.get_form(self.get_second_form_class())
+        return context
     
+    def post(self, request, *args, **kwargs):
+        if 'addCampo' in request.POST:
+            form = self.get_form(self.get_form_class())
+            if form.is_valid():
+                form.agregarCampo(0)
+                return self.form_valid(form)
+            else:
+                return self.form_invalid(form)
+        elif 'addFila' in request.POST:
+            form = self.get_form(self.get_second_form_class())
+            if form.is_valid():
+                form.agregarPropiedad()
+                return self.form_valid(form)
+            else:
+                return self.form_invalid(form)
+        
+    def form_valid(self, form):
+        return super().form_valid(form)
+
+    def get_second_form_class(self):
+        return self.second_form_class
 
 class PropiedadDetailView(generic.ListView):
     """

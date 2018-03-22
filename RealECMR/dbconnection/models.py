@@ -29,7 +29,7 @@ class Propiedad(models.Model):
     tipo = models.CharField(max_length=20, default="casa")
     informacion = models.CharField(max_length=500, null=True)
     foto = models.ImageField(null=True)
-    tamano = models.DecimalField(decimal_places=2, max_digits=8, default=0.00)
+    tamano = models.DecimalField(decimal_places=2, max_digits=8, default=0.00, null=True)
     
     def __str__(self):
        return self.id

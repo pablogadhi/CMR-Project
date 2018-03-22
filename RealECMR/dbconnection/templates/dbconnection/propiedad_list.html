@@ -40,6 +40,19 @@
   <form method="post">
       {% csrf_token %} 
       {{ form.as_p }}
-      <input type="submit" value="Save" />
+      <input name='addCampo' type="submit" value="Agregar" class="btn btn-primary" style="float:right"/>
+  </form>
+{% endblock %}
+
+{% block addFilaForm %}
+  <form method="post">
+      {% csrf_token %} 
+      {{ second_form.as_p }}
+      {% for extra in campos_adicionales %}
+      <label for="{{extra.nombre}}">{{extra.nombre}}: </label>
+      <input id="{{extra.nombre}}" type="text" name="{extra.nombre}}">
+      <p></p>
+      {% endfor %}
+      <input name='addFila' type="submit" value="Agregar" class="btn btn-primary" style="float:right"/>
   </form>
 {% endblock %}

@@ -19,6 +19,9 @@
           <th>Cerca de</th>
           <th>Presupuesto</th>
           <th>Foto</th>
+          {% for i in campos_adicionales %}
+          <th>{{i.nombre}}</th>
+          {% endfor %}
         </tr>
       {% for comprador in comprador_list %}
         <tr>
@@ -41,4 +44,12 @@
     {% else %}
       <p>No hay compradores registrados.</p>
     {% endif %}       
+{% endblock %}
+
+{% block addform %}
+  <form method="post">
+      {% csrf_token %} 
+      {{ form.as_p }}
+      <input type="submit" value="Agregar" class="btn btn-primary" style="float:right"/>
+  </form>
 {% endblock %}
