@@ -29,7 +29,6 @@ def generateDummy():
                               )
         propiedad.save()
         propiedades.append(propiedad.id)
-        print(propiedades)
 
     for i in range(100):
         nombreE = random.choice(nombres)

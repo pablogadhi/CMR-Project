@@ -14,6 +14,9 @@
           <th>Valuacion</th>
           <th>Informacion</th>
           <th>Foto</th>
+          {% for i in campos_adicionales %}
+          <th>{{i.nombre}}</th>
+          {% endfor %}
         </tr>
       {% for propiedad in propiedad_list %}
       <tr>
@@ -31,4 +34,12 @@
     {% else %}
       <p>No hay propiedades registradas.</p>
     {% endif %}       
+{% endblock %}
+
+{% block addform %}
+  <form method="post">
+      {% csrf_token %} 
+      {{ form.as_p }}
+      <input type="submit" value="Save" />
+  </form>
 {% endblock %}
