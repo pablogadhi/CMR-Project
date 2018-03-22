@@ -14,6 +14,9 @@
           <th>Valuacion</th>
           <th>Informacion</th>
           <th>Foto</th>
+          {% for i in campos_adicionales %}
+          <th>{{i.nombre}}</th>
+          {% endfor %}
         </tr>
       {% for propiedad in propiedad_list %}
       <tr>
@@ -31,4 +34,25 @@
     {% else %}
       <p>No hay propiedades registradas.</p>
     {% endif %}       
+{% endblock %}
+
+{% block addform %}
+  <form method="post">
+      {% csrf_token %} 
+      {{ form.as_p }}
+      <input name='addCampo' type="submit" value="Agregar" class="btn btn-primary" style="float:right"/>
+  </form>
+{% endblock %}
+
+{% block addFilaForm %}
+  <form method="post">
+      {% csrf_token %} 
+      {{ second_form.as_p }}
+      {% for extra in campos_adicionales %}
+      <label for="{{extra.nombre}}">{{extra.nombre}}: </label>
+      <input id="{{extra.nombre}}" type="text" name="{extra.nombre}}">
+      <p></p>
+      {% endfor %}
+      <input name='addFila' type="submit" value="Agregar" class="btn btn-primary" style="float:right"/>
+  </form>
 {% endblock %}

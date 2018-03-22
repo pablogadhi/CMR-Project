@@ -8,5 +8,6 @@ urlpatterns = [
     path('intermediarios/', views.IntermediarioListView.as_view(), name='intermediarios'),
     path('propietarios/', views.PropetarioListView.as_view(), name='propietarios'),
     path('propiedad/<int:pk>', views.PropiedadDetailView.as_view(), name='propiedad-detail'),
+    path('agregarCampo/', views.AgregarCampoView.as_view(), name='agregarCampo'),
     path('dummy/', views.dummy, name='dummy')
 ]

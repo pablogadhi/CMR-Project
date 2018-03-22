@@ -11,6 +11,9 @@
           <th>Nombre</th>
           <th>Experiencia</th>
           <th>Comision</th>
+          {% for i in campos_adicionales %}
+          <th>{{i.nombre}}</th>
+          {% endfor %}
         </tr>
       {% for intermediario in intermediario_list %}
         <tr>
@@ -25,4 +28,12 @@
     {% else %}
       <p>No hay intermediarios registrados.</p>
     {% endif %}       
+{% endblock %}
+
+{% block addform %}
+  <form method="post">
+      {% csrf_token %} 
+      {{ form.as_p }}
+      <input type="submit" value="Agregar" class="btn btn-primary" style="float:right"/>
+  </form>
 {% endblock %}
