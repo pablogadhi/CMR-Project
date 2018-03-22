@@ -7,9 +7,6 @@ urlpatterns = [
     path('compradores/', views.CompradorListView.as_view(), name='compradores'),
     path('intermediarios/', views.IntermediarioListView.as_view(), name='intermediarios'),
     path('propietarios/', views.PropetarioListView.as_view(), name='propietarios'),
-<<<<<<< HEAD
-=======
     path('propiedad/<int:pk>', views.PropiedadDetailView.as_view(), name='propiedad-detail'),
     path('dummy/', views.dummy, name='dummy')
->>>>>>> master
 ]
