@@ -32,10 +32,10 @@ class Propiedad(models.Model):
     tamano = models.DecimalField(decimal_places=2, max_digits=8, default=0.00)
     
     def __str__(self):
-       return self.id
+       return str(self.id)
 
 class Propietario(Cliente):
-    bienPoseido = models.ForeignKey(Propiedad, on_delete=models.CASCADE)
+    bienPoseido = models.ForeignKey(Propiedad, on_delete=models.CASCADE, default=0)
     direccion = models.CharField(max_length=50, null=True)
 
 class Comprador(Cliente):

@@ -26,28 +26,28 @@ class PropetarioListView(generic.ListView):
     Generic class-based view for a list of Propietario.
     """
     model = Propietario
-    paginate_by = 10
+    paginate_by = 100
 
 class IntermediarioListView(generic.ListView):
     """
     Generic class-based view for a list of Intermediario.
     """
     model = Intermediario
-    paginate_by = 10
+    paginate_by = 100
 
 class CompradorListView(generic.ListView):
     """
     Generic class-based view for a list of Comprador.
     """
     model = Comprador
-    paginate_by = 10
+    paginate_by = 100
 
 class PropiedadListView(generic.ListView):
     """
     Generic class-based view for a list of Propiedad.
     """
     model = Propiedad
-    paginate_by = 10
+    paginate_by = 100
 
 class PropiedadDetailView(generic.ListView):
     """

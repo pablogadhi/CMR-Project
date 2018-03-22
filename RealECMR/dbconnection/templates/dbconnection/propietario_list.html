@@ -16,12 +16,11 @@
           <th>Correo</th>
           <th>FechaInicio</th>
           <th>Propiedad</th>
-          <th>Dirección</th>
+          <th>Direccion</th>
           <th>Foto</th>
-
         </tr>
       {% for propietario in propietario_list %}
-      <tr>
+        <tr>
           <td>{{propietario.id}}</td>
           <td>{{propietario.activo}}</td>
           <td>{{propietario.nombre}}</td>
@@ -29,9 +28,10 @@
           <td>{{propietario.edad}}</td>
           <td>{{propietario.telefono}}</td>
           <td>{{propietario.mail}}</td>
-
           <td>{{propietario.fechaInicio}}</td>
-          
+          <td>{{propietario.bienPoseido}}</td>
+          <td>{{propietario.direccion}}</td>
+          <td>{{propietario.foto}}</td>
         </tr>
       {% endfor %}
       </table>
