@@ -3,16 +3,24 @@ from django.urls import reverse
 
 class Cliente(models.Model):
     id = models.AutoField(primary_key=True)
+    activo = models.BooleanField(default=True)
     nombre = models.CharField(max_length=50, null=True)
+    TIPOSEXO = (
+        ('f', 'femenino'),
+        ('m', 'masculino'),
+    )
+    sexo = models.CharField(max_length=1, choices=TIPOSEXO, blank=True, default='f')
     edad = models.IntegerField(default=0)
     telefono = models.IntegerField(default=0)
-    sexo = models.CharField(max_length=10, default="femenino")
-    rol = models.CharField(max_length=15, default="comprador")
-    foto = models.ImageField(null=True)
-    fechaInicio = models.DateField(null=True)
-    activo = models.BooleanField(default=True)
     mail = models.EmailField(null=True)
-    
+    fechaInicio = models.DateField(null=True)
+    TIPOREP = (
+        ('b', 'buena'),
+        ('n', 'normal'),
+        ('m', 'mala'),
+    )
+    reputacion = models.CharField(max_length=1, choices=TIPOREP, blank=True, default='b')
+    foto = models.ImageField(null=True)
     def __str__(self):
        return self.nombre
 
@@ -24,6 +32,8 @@ class Cliente(models.Model):
 
 class Propiedad(models.Model):
     id = models.AutoField(primary_key=True)
+    propietario = models.ForeignKey('Propietario', on_delete=models.CASCADE, default=0)
+    intermediario = models.ForeignKey('Intermediario', on_delete=models.CASCADE, default=0)
     direccion = models.CharField(max_length=50, null=True)
     valuacion = models.FloatField(default=0.0)
     tipo = models.CharField(max_length=20, default="casa")
@@ -35,7 +45,6 @@ class Propiedad(models.Model):
        return str(self.id)
 
 class Propietario(Cliente):
-    bienPoseido = models.ForeignKey(Propiedad, on_delete=models.CASCADE, default=0)
     direccion = models.CharField(max_length=50, null=True)
 
 class Comprador(Cliente):
@@ -43,14 +52,9 @@ class Comprador(Cliente):
     tipoPropiedad = models.CharField(max_length=20, default="casa")
     presupuesto = models.FloatField(default=0.0)
 
-class Intermediario(models.Model):
-    id = models.AutoField(primary_key=True)
+class Intermediario(Cliente):
     comision = models.DecimalField(decimal_places=2, max_digits=8, default=0.00)
     experiencia = models.IntegerField(default=0)
-    nombre = models.CharField(max_length=35, null=True)
-    
-    def __str__(self):
-       return self.nombre
 
 class CamposAdicionales(models.Model):
     id = models.AutoField(primary_key=True)

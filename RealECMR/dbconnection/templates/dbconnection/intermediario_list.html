@@ -8,9 +8,16 @@
       <table>
         <tr>
           <th>ID</th>
+          <th>Activo</th>
           <th>Nombre</th>
-          <th>Experiencia</th>
+          <th>Sexo</th>
+          <th>Edad</th>
+          <th>Telefono</th>
+          <th>Correo</th>
+          <th>FechaInicio</th>
+          <th>Reputacion</th>
           <th>Comision</th>
+          <th>Experiencia</th>
           {% for i in campos_adicionales %}
           <th>{{i.nombre}}</th>
           {% endfor %}
@@ -18,9 +25,18 @@
       {% for intermediario in intermediario_list %}
         <tr>
           <td>{{intermediario.id}}</td>
+          <td>{{intermediario.activo}}</td>
           <td>{{intermediario.nombre}}</td>
-          <td>{{intermediario.experiencia}}</td>
-          <td>{{intermediario.comision}}</td>
+          <td>{{intermediario.sexo}}</td>
+          <td>{{intermediario.edad}} años</td>
+          <td>+502-{{intermediario.telefono}}</td>
+          <td>{{intermediario.mail}}</td>
+          <td>{{intermediario.fechaInicio}}</td>
+          <td>{{intermediario.reputacion}}</td>
+          <td>{{intermediario.comision}} %</td>
+          <td>{{intermediario.experiencia}} años</td>
+
+          <td>{{intermediario.foto}}</td>
         </tr>
       {% endfor %}
     </table>

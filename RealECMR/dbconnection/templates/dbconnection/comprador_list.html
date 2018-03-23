@@ -15,13 +15,14 @@
           <th>Telefono</th>
           <th>Correo</th>
           <th>FechaInicio</th>
+          <th>Reputacion</th>
+          <th>Busca cerca de</th>
           <th>Busca</th>
-          <th>Cerca de</th>
           <th>Presupuesto</th>
-          <th>Foto</th>
           {% for i in campos_adicionales %}
           <th>{{i.nombre}}</th>
           {% endfor %}
+          <th>Foto</th>
         </tr>
       {% for comprador in comprador_list %}
         <tr>
@@ -33,9 +34,11 @@
           <td>{{comprador.telefono}}</td>
           <td>{{comprador.mail}}</td>
           <td>{{comprador.fechaInicio}}</td>
-          <td>{{comprador.tipoPropiedad}}</td>
+          <td>{{comprador.reputacion}}</td>
           <td>{{comprador.zona}}</td>
+          <td>{{comprador.tipoPropiedad}}</td>
           <td>{{comprador.presupuesto}}</td>
+          
           <td>{{comprador.foto}}</td>
         </tr>
       {% endfor %}
