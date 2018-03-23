@@ -18,6 +18,9 @@
           <th>Reputacion</th>
           <th>Direccion</th>
           <th>Foto</th>
+          {% for i in campos_adicionales %}
+          <th>{{i.nombre}}</th>
+          {% endfor %}
         </tr>
       {% for propietario in propietario_list %}
         <tr>

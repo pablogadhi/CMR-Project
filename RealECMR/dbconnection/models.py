@@ -6,20 +6,20 @@ class Cliente(models.Model):
     activo = models.BooleanField(default=True)
     nombre = models.CharField(max_length=50, null=True)
     TIPOSEXO = (
-        ('f', 'femenino'),
-        ('m', 'masculino'),
+        ('femenino', 'f'),
+        ('masculino', 'm'),
     )
-    sexo = models.CharField(max_length=1, choices=TIPOSEXO, blank=True, default='f')
+    sexo = models.CharField(max_length=8, choices=TIPOSEXO, blank=True, default='f')
     edad = models.IntegerField(default=0)
     telefono = models.IntegerField(default=0)
     mail = models.EmailField(null=True)
     fechaInicio = models.DateField(null=True)
     TIPOREP = (
-        ('b', 'buena'),
-        ('n', 'normal'),
-        ('m', 'mala'),
+        ('buena', 'b'),
+        ('normal', 'n'),
+        ('mala', 'm'),
     )
-    reputacion = models.CharField(max_length=1, choices=TIPOREP, blank=True, default='b')
+    reputacion = models.CharField(max_length=6, choices=TIPOREP, blank=True, default='b')
     foto = models.ImageField(null=True)
     def __str__(self):
        return self.nombre

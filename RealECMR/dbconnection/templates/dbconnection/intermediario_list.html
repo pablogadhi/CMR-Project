@@ -18,8 +18,9 @@
           <th>Reputacion</th>
           <th>Comision</th>
           <th>Experiencia</th>
+          <th>Foto</th>
           {% for i in campos_adicionales %}
-          <th>{{i.nombre}}</th>
+            <th>{{i.nombre}}</th>
           {% endfor %}
         </tr>
       {% for intermediario in intermediario_list %}
@@ -35,7 +36,6 @@
           <td>{{intermediario.reputacion}}</td>
           <td>{{intermediario.comision}} %</td>
           <td>{{intermediario.experiencia}} años</td>
-
           <td>{{intermediario.foto}}</td>
         </tr>
       {% endfor %}
