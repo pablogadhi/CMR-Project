@@ -2,7 +2,7 @@ from django.http import HttpResponse
 from django.template import loader
 from .forms import AgregarCampoForm, AgregarPropiedad
 from django.shortcuts import render, get_object_or_404
-from .models import Cliente, Propietario, Comprador, Propiedad, Intermediario, CamposAdicionales
+from .models import Cliente, Propietario, Comprador, Propiedad, Intermediario, CamposAdicionales, Visita, Administra
 from django.views import generic
 from .dummy import generateDummy
 from django.urls import reverse
@@ -43,6 +43,19 @@ class PropetarioListView(generic.ListView):
     model = Propietario
     paginate_by = 100
 
+class VisitaListView(generic.ListView):
+    """
+    Generic class-based view for a list of Propietario.
+    """
+    model = Visita
+    paginate_by = 100
+
+class AdministraListView(generic.ListView):
+    """
+    Generic class-based view for a list of Propietario.
+    """
+    model = Administra
+    paginate_by = 100
 
 class IntermediarioListView(generic.edit.FormMixin, generic.ListView):
     """

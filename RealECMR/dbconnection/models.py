@@ -56,6 +56,20 @@ class Intermediario(Cliente):
     comision = models.DecimalField(decimal_places=2, max_digits=8, default=0.00)
     experiencia = models.IntegerField(default=0)
 
+class Visita(models.Model):
+    id = models.AutoField(primary_key=True)
+    comprador = models.ForeignKey('Comprador', on_delete=models.CASCADE, default=0)
+    propiedad = models.ForeignKey('Propiedad', on_delete=models.CASCADE, default=0)
+    intermediario = models.ForeignKey('Intermediario', on_delete=models.CASCADE, default=0)
+    fecha = models.DateField(null=True)
+
+class Administra(models.Model):
+    id = models.AutoField(primary_key=True)
+    propietario = models.ForeignKey('Propietario', on_delete=models.CASCADE, default=0)
+    propiedad = models.ForeignKey('Propiedad', on_delete=models.CASCADE, default=0)
+    intermediario = models.ForeignKey('Intermediario', on_delete=models.CASCADE, default=0)
+    fecha = models.DateField(null=True)
+
 class CamposAdicionales(models.Model):
     id = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=50, null=True)

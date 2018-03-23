@@ -1,0 +1,30 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+    <h1>Adminsitracion</h1>
+    <hr>
+    {% if administra_list %}
+    <ul>
+      <table>
+        <tr>
+          <th>ID</th>
+          <th>Propietario</th>
+          <th>Propiedad</th>
+          <th>Administrador</th>
+          <th>Fecha</th>
+        </tr>
+      {% for interaccion in administra_list %}
+        <tr>
+          <td>{{interaccion.id}}</td>
+          <td>{{interaccion.comprador}}</td>
+          <td>{{interaccion.propiedad}}</td>
+          <td>{{interaccion.intermediario}}</td>
+          <td>{{interaccion.fecha}}</td>
+        </tr>
+      {% endfor %}
+      </table>
+    </ul>
+    {% else %}
+      <p>No hay interacciones.</p>
+    {% endif %}       
+{% endblock %}

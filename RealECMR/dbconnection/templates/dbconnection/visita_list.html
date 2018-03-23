@@ -1,0 +1,30 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+    <h1>Interacciones entre Compradores y Propiedades</h1>
+    <hr>
+    {% if visita_list %}
+    <ul>
+      <table>
+        <tr>
+          <th>ID</th>
+          <th>Comprador</th>
+          <th>Propiedad</th>
+          <th>Atendido por:</th>
+          <th>Fecha</th>
+        </tr>
+      {% for visita in visita_list %}
+        <tr>
+          <td>{{visita.id}}</td>
+          <td>{{visita.comprador}}</td>
+          <td>{{visita.propiedad}}</td>
+          <td>{{visita.intermediario}}</td>
+          <td>{{visita.fecha}}</td>
+        </tr>
+      {% endfor %}
+      </table>
+    </ul>
+    {% else %}
+      <p>No hay interacciones etre compradores y propiedades.</p>
+    {% endif %}       
+{% endblock %}
