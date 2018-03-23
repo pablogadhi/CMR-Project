@@ -6,20 +6,21 @@ class Cliente(models.Model):
     activo = models.BooleanField(default=True)
     nombre = models.CharField(max_length=50, null=True)
     TIPOSEXO = (
-        ('femenino', 'f'),
-        ('masculino', 'm'),
+        ('Femenino','Femenino'),
+        ('Masculino','Masculino'),
     )
-    sexo = models.CharField(max_length=8, choices=TIPOSEXO, blank=True, default='f')
+    sexo = models.CharField(max_length=10, choices=TIPOSEXO, blank=True)
     edad = models.IntegerField(default=0)
     telefono = models.IntegerField(default=0)
     mail = models.EmailField(null=True)
+    cuenta = models.CharField(max_length=50, null=True)
     fechaInicio = models.DateField(null=True)
     TIPOREP = (
-        ('buena', 'b'),
-        ('normal', 'n'),
-        ('mala', 'm'),
+        ('Buena','Buena'),
+        ('Normal','Normal'),
+        ('Mala','Mala'),
     )
-    reputacion = models.CharField(max_length=6, choices=TIPOREP, blank=True, default='b')
+    reputacion = models.CharField(max_length=10, choices=TIPOREP, blank=True)
     foto = models.ImageField(null=True)
     def __str__(self):
        return self.nombre
@@ -36,7 +37,13 @@ class Propiedad(models.Model):
     intermediario = models.ForeignKey('Intermediario', on_delete=models.CASCADE, default=0)
     direccion = models.CharField(max_length=50, null=True)
     valuacion = models.FloatField(default=0.0)
-    tipo = models.CharField(max_length=20, default="casa")
+    TIPOBIEN = (
+        ('Apartamento','Apartamento'),
+        ('Casa','Casa'),
+        ('Terreno','Terreno'),
+        ('Otro','Otro')
+    )
+    tipo = models.CharField(max_length=10, choices=TIPOBIEN, blank=True)
     informacion = models.CharField(max_length=500, null=True)
     foto = models.ImageField(null=True)
     tamano = models.DecimalField(decimal_places=2, max_digits=8, default=0.00, null=True)
@@ -49,7 +56,13 @@ class Propietario(Cliente):
 
 class Comprador(Cliente):
     zona = models.IntegerField(default=0)
-    tipoPropiedad = models.CharField(max_length=20, default="casa")
+    TIPOBIEN = (
+        ('Apartamento','Apartamento'),
+        ('Casa','Casa'),
+        ('Terreno','Terreno'),
+        ('Otro','Otro')
+    )
+    tipoPropiedad = models.CharField(max_length=10, choices=TIPOBIEN, blank=True)
     presupuesto = models.FloatField(default=0.0)
 
 class Intermediario(Cliente):
