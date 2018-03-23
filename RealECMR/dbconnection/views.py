@@ -107,6 +107,9 @@ class CompradorListView(generic.edit.FormMixin, generic.ListView):
         form.agregarCampo(2)
         return super().form_valid(form)
 
+    # def get_queryset(self):
+        # return Comprador.objects.raw('SELECT * FROM dbconnection_comprador as comp ORDER BY comp.nombre ASC')
+
 
 class PropiedadListView(generic.edit.FormMixin, generic.ListView):
     """
@@ -122,9 +125,9 @@ class PropiedadListView(generic.edit.FormMixin, generic.ListView):
 
     def get_context_data(self, **kwargs):
         cursor = connection.cursor()
+        context = super().get_context_data(**kwargs)
         cursor.execute(
             "SELECT * FROM dbconnection_camposadicionales as ca WHERE ca.tabla = 0")
-        context = super().get_context_data(**kwargs)
         context['campos_adicionales'] = dictfetchall(cursor)
         context['form'] = self.get_form()
         context['second_form'] = self.get_form(self.get_second_form_class())
