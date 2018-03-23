@@ -2,13 +2,15 @@
 
 {% block content %}
     <h1>Lista de Propiedades</h1>
-
+    <hr>
     {% if propiedad_list %}
     <ul>
       <table>
         <tr>
           <th>ID</th>
           <th>Direccion</th>
+          <th>Propietario</th>
+          <th>Intermediario</th>
           <th>Tipo</th>
           <th>Tamaño</th>
           <th>Valuacion</th>
@@ -22,6 +24,8 @@
       <tr>
           <td>{{propiedad.id}}</td>
           <td>{{propiedad.direccion}}</td>
+          <td>{{propiedad.propietario}}</td>
+          <td>{{propiedad.intermediario}}</td>
           <td>{{propiedad.tipo}}</td>
           <td>{{propiedad.tamano}}</td>
           <td>{{propiedad.valuacion}}</td>

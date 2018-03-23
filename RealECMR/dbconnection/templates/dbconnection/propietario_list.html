@@ -2,7 +2,7 @@
 
 {% block content %}
     <h1>Lista de Propietarios</h1>
-
+    <hr>
     {% if propietario_list %}
     <ul>
       <table>
@@ -15,9 +15,12 @@
           <th>Telefono</th>
           <th>Correo</th>
           <th>FechaInicio</th>
-          <th>Propiedad</th>
+          <th>Reputacion</th>
           <th>Direccion</th>
           <th>Foto</th>
+          {% for i in campos_adicionales %}
+          <th>{{i.nombre}}</th>
+          {% endfor %}
         </tr>
       {% for propietario in propietario_list %}
         <tr>
@@ -29,7 +32,7 @@
           <td>{{propietario.telefono}}</td>
           <td>{{propietario.mail}}</td>
           <td>{{propietario.fechaInicio}}</td>
-          <td>{{propietario.bienPoseido}}</td>
+          <td>{{propietario.reputacion}}</td>
           <td>{{propietario.direccion}}</td>
           <td>{{propietario.foto}}</td>
         </tr>
