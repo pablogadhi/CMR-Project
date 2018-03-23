@@ -8,7 +8,6 @@ class Cliente(models.Model):
     TIPOSEXO = (
         ('femenino', 'f'),
         ('masculino', 'm'),
-        ('pablo', 'o'),
     )
     sexo = models.CharField(max_length=8, choices=TIPOSEXO, blank=True, default='f')
     edad = models.IntegerField(default=0)
