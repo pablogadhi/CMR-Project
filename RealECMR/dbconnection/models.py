@@ -9,7 +9,7 @@ class Cliente(models.Model):
         ('Femenino','Femenino'),
         ('Masculino','Masculino'),
     )
-    sexo = models.CharField(max_length=10, choices=TIPOSEXO, blank=True)
+    sexo = models.CharField(max_length=9, choices=TIPOSEXO, blank=True, default='f')
     edad = models.IntegerField(default=0)
     telefono = models.IntegerField(default=0)
     mail = models.EmailField(null=True)

@@ -1,6 +1,6 @@
 from django.http import HttpResponse
 from django.template import loader
-from .forms import AgregarCampoForm, AgregarPropiedad
+from .forms import AgregarCampoForm, AgregarPropiedad, AgregarComprador
 from django.shortcuts import render, get_object_or_404
 from .models import Cliente, Propietario, Comprador, Propiedad, Intermediario, CamposAdicionales, Visita, Administra
 from django.views import generic
@@ -96,33 +96,47 @@ class CompradorListView(generic.edit.FormMixin, generic.ListView):
     model = Comprador
     paginate_by = 10
     form_class = AgregarCampoForm
+    second_form_class = AgregarComprador
 
     def get_success_url(self):
-        return reverse('compradores')
+        return reverse('propiedades')
 
     def get_context_data(self, **kwargs):
+        self.object_list = self.get_queryset()
         cursor = connection.cursor()
+        context = super().get_context_data(**kwargs)
         cursor.execute(
             "SELECT * FROM dbconnection_camposadicionales as ca WHERE ca.tabla = 2")
-        context = super().get_context_data(**kwargs)
         context['campos_adicionales'] = dictfetchall(cursor)
         context['form'] = self.get_form()
+        context['second_form'] = self.get_form(self.get_second_form_class())
         return context
-
+    
     def post(self, request, *args, **kwargs):
-        form = self.get_form()
-        if form.is_valid():
-            return self.form_valid(form)
-        else:
-            return self.form_invalid(form)
-
+        if 'addCampo' in request.POST:
+            form = self.get_form(self.get_form_class())
+            if form.is_valid():
+                form.agregarCampo(2)
+                return self.form_valid(form)
+            else:
+                return self.form_invalid(form)
+        elif 'addFila' in request.POST:
+            form = self.get_form(self.get_second_form_class())
+            if form.is_valid():
+                form.agregarPropiedad()
+                return self.form_valid(form)
+            else:
+                return self.form_invalid(form)
+        
     def form_valid(self, form):
-        form.agregarCampo(2)
         return super().form_valid(form)
 
-    # def get_queryset(self):
-        # return Comprador.objects.raw('SELECT * FROM dbconnection_comprador as comp ORDER BY comp.nombre ASC')
+    def form_invalid(self, form):
+        print("Invalid Form!")
+        return super().form_invalid(form)
 
+    def get_second_form_class(self):
+        return self.second_form_class
 
 class PropiedadListView(generic.edit.FormMixin, generic.ListView):
     """

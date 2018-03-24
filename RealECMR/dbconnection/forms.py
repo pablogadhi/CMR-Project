@@ -1,6 +1,6 @@
 from django import forms
 from django.db import connection
-from .models import CamposAdicionales, Propiedad
+from .models import CamposAdicionales, Propiedad, Comprador
 
 class QueryForm(forms.Form):
     query = forms.CharField(label='Query:', max_length=500,widget=forms.TextInput(attrs={'size':'120'}))
@@ -39,3 +39,9 @@ class AgregarPropiedad(forms.ModelForm):
         id = Propiedad.objects.count()
         cursor = connection.cursor()
         cursor.execute("INSERT INTO dbconnection_propiedad VALUES (%s, %s, %s, %s, %s, %s, %s)", [id, data.get("direccion"), data.get("valuacion"), data.get("tipo"), data.get("informacion"), foto, data.get("tamano")])
+
+
+class AgregarComprador(forms.ModelForm):
+    class Meta:
+        model = Comprador
+        fields = ['activo', 'nombre', 'sexo', 'edad', 'telefono', 'mail', 'fechaInicio', 'reputacion', 'zona', 'tipoPropiedad', 'presupuesto']
