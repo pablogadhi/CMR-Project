@@ -1,6 +1,6 @@
 from django import forms
 from django.db import connection
-from .models import CamposAdicionales, Propiedad, Comprador
+from .models import *
 
 class AgregarCampoForm(forms.Form):
     nombre = forms.CharField(max_length=50)
@@ -55,7 +55,7 @@ class AgregarComprador(forms.Form):
     telefono = forms.IntegerField(widget=forms.TextInput)
     mail = forms.EmailField()
     cuenta = forms.CharField()
-    fechaInico = forms.DateField(
+    fechaInicio = forms.DateField(
         label='Fecha de Inicio', widget=forms.SelectDateWidget)
     TIPOREP = (
         ('Normal', 'Normal'),
@@ -87,7 +87,7 @@ class AgregarPropietario(forms.Form):
     telefono = forms.IntegerField(widget=forms.TextInput)
     mail = forms.EmailField()
     cuenta = forms.CharField()
-    fechaInico = forms.DateField(
+    fechaInicio = forms.DateField(
         label='Fecha de Inicio', widget=forms.SelectDateWidget)
     TIPOREP = (
         ('Normal', 'Normal'),
@@ -97,6 +97,31 @@ class AgregarPropietario(forms.Form):
     reputacion = forms.ChoiceField(choices=TIPOREP)
     foto = forms.FileField(required=False)
     direccion = forms.CharField(max_length=50)
+
+    def agregarPropietario(self, camposAdicionales, valoresAdicionales):
+        data = self.cleaned_data
+        cursor = connection.cursor()
+        id = Propietario.objects.count()
+        activo = str(data.get("activo"))
+        nombre = data.get("nombre")
+        sexo = data.get("sexo")
+        edad = data.get("edad")
+        telefono = data.get("telefono")
+        mail = data.get("mail")
+        cuenta = None
+        fechaInicio = data.get("fechaInicio")
+        reputacion = 'Normal'
+        foto = None
+        direccion = data.get("direccion")
+        cursor.execute("INSERT INTO dbconnection_propietario VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", [id, activo, nombre, sexo, edad, telefono, mail, cuenta, fechaInicio, reputacion, foto, direccion])
+        for campo in camposAdicionales:
+            id_extra = ValoresAdicionales.objects.count()
+            id_campo = campo.get("id")
+            id_tupla = id
+            campoKey = "ca" + str(id_campo)
+            valor = valoresAdicionales.get(campoKey)
+            cursor.execute("INSERT INTO dbconnection_valoresadicionales VALUES (%s, %s, %s, %s)", [id_extra, id_tupla, valor, id_campo])
+
 
 class AgregarIntermediario(forms.Form):
     activo = forms.BooleanField(initial=True)
@@ -110,7 +135,7 @@ class AgregarIntermediario(forms.Form):
     telefono = forms.IntegerField(widget=forms.TextInput)
     mail = forms.EmailField()
     cuenta = forms.CharField()
-    fechaInico = forms.DateField(
+    fechaInicio = forms.DateField(
         label='Fecha de Inicio', widget=forms.SelectDateWidget)
     TIPOREP = (
         ('Normal', 'Normal'),

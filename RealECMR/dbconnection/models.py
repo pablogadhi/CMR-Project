@@ -22,8 +22,8 @@ class Cliente(models.Model):
     )
     reputacion = models.CharField(max_length=10, choices=TIPOREP, blank=True)
     foto = models.ImageField(null=True)
-    def __str__(self):
-       return self.nombre
+    # def __str__(self):
+       # return self.nombre
 
     def get_absolute_url(self):
         return reverse('detalle-cliente',args=[str(self.id)])
@@ -90,7 +90,7 @@ class CamposAdicionales(models.Model):
     tabla = models.IntegerField(default=0)
 
 class ValoresAdicionales(models.Model):
-    id_campo = models.ForeignKey(CamposAdicionales, on_delete=models.CASCADE)
+    campo = models.ForeignKey(CamposAdicionales, on_delete=models.CASCADE)
     id_tupla = models.IntegerField(default=0)
     valor = models.CharField(max_length=35, default="")
     
