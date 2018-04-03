@@ -76,6 +76,11 @@ class Visita(models.Model):
     intermediario = models.ForeignKey('Intermediario', on_delete=models.CASCADE, default=0)
     fecha = models.DateField(null=True)
 
+class Tweet(models.Model):
+    id = models.AutoField(primary_key=True)
+    cuenta = models.CharField(max_length=50, null=True)
+    texto = models.CharField(max_length=50, null=True)
+
 class Administra(models.Model):
     id = models.AutoField(primary_key=True)
     propietario = models.ForeignKey('Propietario', on_delete=models.CASCADE, default=0)

@@ -2,6 +2,12 @@
 
 {% block content %}
     <h1>Lista de Compradores</h1>
+    <form method="post">
+    <label for"Activo"> Activo: </label> <input id="" type="checkbox" name="Activo" value="{{activo}}">
+    <label for"Edad"> Edad: </label> <input type="number" name="Edad" value="{{edad}}">
+    <label for"your_name"> Nombre: </label> <input id="your_name" type="text" name="your_name" value="{{nombre}}">
+    <button type="submit" value="Filtrar">Filtrar</button>
+  </form>
     <hr>
     {% if comprador_list %}
     <ul>

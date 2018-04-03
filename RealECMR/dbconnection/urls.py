@@ -10,6 +10,7 @@ urlpatterns = [
 
     path('visitas/', views.VisitaListView.as_view(), name='visitas'),
     path('administracion/', views.AdministraListView.as_view(), name='administraciones'),
+    path('tweets/', views.TweetListView.as_view(), name='tweets'),
 
     path('propiedad/<int:pk>', views.PropiedadDetailView.as_view(), name='propiedad-detail'),
     path('agregarCampo/', views.AgregarCampoView.as_view(), name='agregarCampo'),

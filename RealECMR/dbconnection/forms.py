@@ -156,3 +156,6 @@ class AgregarIntermediario(forms.Form):
     foto = forms.FileField(required=False)
     comision = forms.DecimalField(widget=forms.TextInput)
     experiencia = forms.IntegerField(widget=forms.TextInput)
+
+class FiltroCompradores(forms.Form):
+    nombre = forms.CharField(label='Nombre', max_length=100)

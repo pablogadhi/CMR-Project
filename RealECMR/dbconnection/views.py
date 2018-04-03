@@ -2,7 +2,7 @@ from django.http import HttpResponse
 from django.template import loader
 from .forms import *
 from django.shortcuts import render, get_object_or_404
-from .models import Cliente, Propietario, Comprador, Propiedad, Intermediario, CamposAdicionales, Visita, Administra
+from .models import *
 from django.views import generic
 from .dummy import generateDummy
 from django.urls import reverse
@@ -24,11 +24,14 @@ def index(request):
     num_compradores = Comprador.objects.all().count()
     num_propiedades = Propiedad.objects.all().count()
     num_intermediarios = Intermediario.objects.all().count()
+    num_visitas = Visita.objects.all().count()
+    num_tweets = Tweet.objects.all().count()
     return render(
         request,
         'index.html',
         context={'num_propietarios': num_propietarios, 'num_compradores': num_compradores,
-                 'num_propiedades': num_propiedades, 'num_intermediarios': num_intermediarios},
+                 'num_propiedades': num_propiedades, 'num_intermediarios': num_intermediarios,
+                 'num_visitas': num_visitas,'num_tweets': num_tweets },
     )
 
 
@@ -160,6 +163,13 @@ class AdministraListView(generic.ListView):
     model = Administra
     paginate_by = 100
 
+class TweetListView(generic.ListView):
+    """
+    Generic class-based view for a list of Propietario.
+    """
+    model = Tweet
+    paginate_by = 100
+
 
 class IntermediarioListView(generic.edit.FormMixin, generic.ListView):
     """
@@ -191,6 +201,8 @@ class IntermediarioListView(generic.edit.FormMixin, generic.ListView):
 
     def form_valid(self, form):
         return super().form_valid(form)
+
+    
 
 
 class CompradorListView(generic.edit.FormMixin, generic.ListView):
