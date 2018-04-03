@@ -1,47 +1,105 @@
 {% extends "base_generic.html" %}
+<!--{% load dbfilters %}-->
 
 {% block content %}
-    <h1>Lista de Propietarios</h1>
-    <hr>
-    {% if propietario_list %}
-    <ul>
-      <table>
+
+{% with uFormSet=update_formset|makeArray vAdicionales=object_list|extraValues:campos_adicionales %}
+<script type="text/javascript">
+
+    $(document).on("click", ".updateB", function(){
+        var updateForms= {{uFormSet|safe}};
+        var camposA = {{campos_adicionales|safe}};
+        var valoresA = {{vAdicionales|safe}};
+        var token = "{{csrf_token}}";
+        var bIndex = $(this).html(); 
+        var current = updateForms[bIndex];
+        var uForm = $("#uForm");
+        uForm.html('');
+        uForm.append('<input name="csrfmiddlewaretoken" value='+token+' type="hidden">');
+        uForm.append(current);
+        for(i = 0; i < camposA.length; i++){
+            var cKey = 'ca' + i;
+            uForm.append('<p><label for="'+camposA[i].nombre+'">'+camposA[i].nombre+':&nbsp</label><input id="'+camposA[i].nombre+'" type="text" name="ca'+camposA[i].id+'" value="'+valoresA[bIndex][cKey]+'"></p>');
+        }
+        uForm.append('<input name="updateFila" type="submit" value="Actualizar" class="btn btn-success" style="float:right"/>');
+        uForm.append('<input name="deleteFila" type="submit" value="Eliminar" class="btn btn-danger" style="float:right"/>');
+    });
+
+</script>
+{% endwith %}
+
+<h1 id="proplista">Lista de Propietarios</h1>
+<hr>
+{% if propietario_list %}
+<ul>
+    <table>
         <tr>
-          <th>ID</th>
-          <th>Activo</th>
-          <th>Nombre</th>
-          <th>Sexo</th>
-          <th>Edad</th>
-          <th>Telefono</th>
-          <th>Correo</th>
-          <th>Twitter</th>
-          <th>FechaInicio</th>
-          <th>Reputacion</th>
-          <th>Direccion</th>
-          <th>Foto</th>
-          {% for i in campos_adicionales %}
-          <th>{{i.nombre}}</th>
-          {% endfor %}
+            <th>ID</th>
+            <th>Activo</th>
+            <th>Nombre</th>
+            <th>Sexo</th>
+            <th>Edad</th>
+            <th>Telefono</th>
+            <th>Correo</th>
+            <th>Twitter</th>
+            <th>FechaInicio</th>
+            <th>Reputacion</th>
+            <th>Direccion</th>
+            <th>Foto</th>
+            {% for i in campos_adicionales %}
+            <th>{{i.nombre}}</th>
+            {% endfor %}
         </tr>
-      {% for propietario in propietario_list %}
+        {% for propietario in propietario_list %}
         <tr>
-          <td>{{propietario.id}}</td>
-          <td>{{propietario.activo}}</td>
-          <td>{{propietario.nombre}}</td>
-          <td>{{propietario.sexo}}</td>
-          <td>{{propietario.edad}}</td>
-          <td>{{propietario.telefono}}</td>
-          <td>{{propietario.mail}}</td>
-          <td>{{propietario.cuenta}}</td>
-          <td>{{propietario.fechaInicio}}</td>
-          <td>{{propietario.reputacion}}</td>
-          <td>{{propietario.direccion}}</td>
-          <td>{{propietario.foto}}</td>
+            <td>
+                <button type="button" class="btn btn-secondary updateB" data-toggle="modal" data-target="#updateModal">{{propietario.id}}</button>
+            </td>
+            <td>{{propietario.activo}}</td>
+            <td>{{propietario.nombre}}</td>
+            <td>{{propietario.sexo}}</td>
+            <td>{{propietario.edad}}</td>
+            <td>{{propietario.telefono}}</td>
+            <td>{{propietario.mail}}</td>
+            <td>{{propietario.cuenta}}</td>
+            <td>{{propietario.fechaInicio}}</td>
+            <td>{{propietario.reputacion}}</td>
+            <td>{{propietario.direccion}}</td>
+            <td>{{propietario.foto}}</td>
+            {% for campo in campos_adicionales %}
+            <td>{{propietario|extraKeyValue:campo.id}}</td>
+            {% endfor %}
         </tr>
-      {% endfor %}
-      </table>
-    </ul>
-    {% else %}
-      <p>No hay propietario registrados.</p>
-    {% endif %}       
+        {% endfor %}
+    </table>
+</ul>
+{% else %}
+<p>No hay propietario registrados.</p>
+{% endif %}
+{% endblock %}
+
+{% block addform %}
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input name="addCampo" type="submit" value="Agregar" class="btn btn-primary" style="float:right"/>
+</form>
+{% endblock %}
+
+{% block addFilaForm %}
+<form method="post">
+    {% csrf_token %}
+    {{ second_form.as_p }}
+    {% for extra in campos_adicionales %}
+    <label for="{{extra.nombre}}">{{extra.nombre}}: </label>
+    <input id="{{extra.nombre}}" type="text" name="ca{{extra.id}}">
+    <p></p>
+    {% endfor %}
+    <input name='addFila' type="submit" value="Agregar" class="btn btn-primary" style="float:right"/>
+</form>
+{% endblock %}
+
+{% block updateFilaForm %}
+<form method="post" id="uForm">
+</form>
 {% endblock %}
