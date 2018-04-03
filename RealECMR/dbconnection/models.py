@@ -14,7 +14,7 @@ class Cliente(models.Model):
     telefono = models.IntegerField(default=0)
     mail = models.EmailField(null=True)
     cuenta = models.CharField(max_length=50, null=True)
-    fechaInicio = models.DateField(null=True)
+    fechainicio = models.DateField(null=True)
     TIPOREP = (
         ('Buena','Buena'),
         ('Normal','Normal'),

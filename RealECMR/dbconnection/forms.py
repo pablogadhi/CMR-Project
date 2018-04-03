@@ -1,7 +1,7 @@
 from django import forms
 from django.db import connection
 from .models import *
-
+from .utilities import dictfetchall
 
 class AgregarCampoForm(forms.Form):
     nombre = forms.CharField(max_length=50)
@@ -13,7 +13,7 @@ class AgregarCampoForm(forms.Form):
     tipo = forms.ChoiceField(choices=TIPOCAMPO)
     # tabla = forms.CharField(max_length=50)
 
-    def agregarCampo(self, tablaNum):
+    def agregar(self, tablaNum):
         data = self.cleaned_data
         id = CamposAdicionales.objects.count()
         # if data.get("tabla") == "propiedad":
@@ -25,7 +25,7 @@ class AgregarCampoForm(forms.Form):
                        id, data.get("nombre"), data.get("tipo"), tablaNum])
 
 
-class AgregarPropiedad(forms.Form):
+class PropiedadForm(forms.Form):
     propietario = forms.IntegerField(widget=forms.TextInput)
     intermediario = forms.IntegerField(widget=forms.TextInput)
     direccion = forms.CharField(max_length=50)
@@ -41,7 +41,7 @@ class AgregarPropiedad(forms.Form):
     foto = forms.FileField(required=False)
     tamano = forms.DecimalField(widget=forms.TextInput)
 
-    def agregarPropiedad(self):
+    def agregar(self):
         foto = None
         data = self.cleaned_data
         id = Propiedad.objects.count()
@@ -50,7 +50,7 @@ class AgregarPropiedad(forms.Form):
             "direccion"), data.get("valuacion"), data.get("tipo"), data.get("informacion"), foto, data.get("tamano")])
 
 
-class AgregarComprador(forms.Form):
+class CompradorForm(forms.Form):
     activo = forms.BooleanField(initial=True)
     nombre = forms.CharField(max_length=50)
     TIPOSEXO = (
@@ -83,8 +83,8 @@ class AgregarComprador(forms.Form):
     presupuesto = forms.FloatField(widget=forms.TextInput)
 
 
-class AgregarPropietario(forms.Form):
-    activo = forms.BooleanField(initial=True)
+class PropietarioForm(forms.Form):
+    activo = forms.BooleanField(initial=True, required=False)
     nombre = forms.CharField(max_length=50)
     TIPOSEXO = (
         ('Femenino', 'Femenino'),
@@ -94,7 +94,7 @@ class AgregarPropietario(forms.Form):
     edad = forms.IntegerField(widget=forms.TextInput)
     telefono = forms.IntegerField(widget=forms.TextInput)
     mail = forms.EmailField()
-    cuenta = forms.CharField()
+    cuenta = forms.CharField(required=False)
     fechaInicio = forms.DateField(
         label='Fecha de Inicio', widget=forms.SelectDateWidget)
     TIPOREP = (
@@ -106,9 +106,10 @@ class AgregarPropietario(forms.Form):
     foto = forms.FileField(required=False)
     direccion = forms.CharField(max_length=50)
 
-    def agregarPropietario(self, camposAdicionales, valoresAdicionales):
+    def agregar(self, camposAdicionales, valoresAdicionales):
         data = self.cleaned_data
         cursor = connection.cursor()
+
         id = Propietario.objects.count()
         activo = str(data.get("activo"))
         nombre = data.get("nombre")
@@ -121,19 +122,60 @@ class AgregarPropietario(forms.Form):
         reputacion = 'Normal'
         foto = None
         direccion = data.get("direccion")
-        cursor.execute("INSERT INTO dbconnection_propietario VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", [
-                       id, activo, nombre, sexo, edad, telefono, mail, cuenta, fechaInicio, reputacion, foto, direccion])
+
+        cursor.execute("INSERT INTO dbconnection_propietario VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
+                        [id, activo, nombre, sexo, edad, telefono, mail, cuenta, fechaInicio, reputacion, foto, direccion])
         for campo in camposAdicionales:
             id_extra = ValoresAdicionales.objects.count()
             id_campo = campo.get("id")
             id_tupla = id
             campoKey = "ca" + str(id_campo)
             valor = valoresAdicionales.get(campoKey)
-            cursor.execute("INSERT INTO dbconnection_valoresadicionales VALUES (%s, %s, %s, %s)", [
-                           id_extra, id_tupla, valor, id_campo])
+            cursor.execute("INSERT INTO dbconnection_valoresadicionales VALUES (%s, %s, %s, %s)",
+                            [id_extra, id_tupla, valor, id_campo])
+
+    def actualizar(self, idTupla, camposAdicionales, valoresAdicionales):
+        data = self.cleaned_data
+        cursor = connection.cursor()
+
+        activo = str(data.get("activo"))
+        nombre = data.get("nombre")
+        sexo = data.get("sexo")
+        edad = data.get("edad")
+        telefono = data.get("telefono")
+        mail = data.get("mail")
+        cuenta = None
+        fechaInicio = data.get("fechaInicio")
+        reputacion = 'Normal'
+        foto = None
+        direccion = data.get("direccion")
+
+        cursor.execute("UPDATE dbconnection_propietario SET id=%s, activo=%s, nombre=%s, sexo=%s, edad=%s, telefono=%s, mail=%s, cuenta=%s, fechainicio=%s, reputacion=%s, foto=%s, direccion=%s WHERE id=%s",
+                        [idTupla, activo, nombre, sexo, edad, telefono, mail, cuenta, fechaInicio, reputacion, foto, direccion, idTupla])
+
+        for campo in camposAdicionales:
+            id_campo = campo.get("id")
+            campoKey = "ca" + str(id_campo)
+            valor = valoresAdicionales.get(campoKey)
+            cursor.execute("SELECT id FROM dbconnection_valoresadicionales WHERE id_tupla=%s AND campo_id=%s",
+                            [idTupla, id_campo])
+            vaId = dictfetchall(cursor)
+            if vaId != []:
+                cursor.execute("UPDATE dbconnection_valoresadicionales SET valor=%s WHERE id_tupla=%s AND campo_id=%s",
+                            [valor, idTupla, id_campo])
+            else:
+                id_extra = ValoresAdicionales.objects.count()
+                cursor.execute("INSERT INTO dbconnection_valoresadicionales VALUES (%s, %s, %s, %s)",
+                            [id_extra, idTupla, valor, id_campo])
 
 
-class AgregarIntermediario(forms.Form):
+    def eliminar(self, idTupla):
+        cursor = connection.cursor()
+        cursor.execute("DELETE FROM dbconnection_propietario WHERE id=%s", [idTupla])
+        cursor.execute("DELETE FROM dbconnection_valoresadicionales WHERE id=%s", [idTupla])
+
+            
+class IntermediarioForm(forms.Form):
     activo = forms.BooleanField(initial=True)
     nombre = forms.CharField(max_length=50)
     TIPOSEXO = (

@@ -8,16 +8,7 @@ from .dummy import generateDummy
 from django.urls import reverse
 from django.db import connection
 from django.forms import formset_factory, BaseFormSet
-
-
-def dictfetchall(cursor):
-    "Return all rows from a cursor as a dict"
-    columns = [col[0] for col in cursor.description]
-    return [
-        dict(zip(columns, row))
-        for row in cursor.fetchall()
-    ]
-
+from .utilities import dictfetchall
 
 def index(request):
     num_propietarios = Propietario.objects.all().count()
@@ -47,13 +38,13 @@ class PropetarioListView(generic.edit.FormMixin, generic.ListView):
     # model = Propietario
     cursor = connection.cursor()
     campos_adicionales = []
-    UpdateFormset = formset_factory(AgregarPropietario)
+    UpdateFormset = formset_factory(PropietarioForm)
 
     context_object_name = 'propietario_list'
     template_name = 'dbconnection/propietario_list.html'
     paginate_by = 100
     form_class = AgregarCampoForm
-    second_form_class = AgregarPropietario
+    second_form_class = PropietarioForm
 
     def get_success_url(self):
         return reverse('propietarios')
@@ -72,7 +63,7 @@ class PropetarioListView(generic.edit.FormMixin, generic.ListView):
         if 'addCampo' in request.POST:
             form = self.get_form(self.get_form_class())
             if form.is_valid():
-                form.agregarCampo(1)
+                form.agregar(1)
                 return self.form_valid(form)
             else:
                 return self.form_invalid(form)
@@ -86,7 +77,7 @@ class PropetarioListView(generic.edit.FormMixin, generic.ListView):
                 for i in campos_adicionales:
                     key = "ca"+str(i['id'])
                     valoresA[key] = request.POST.get(key)
-                form.agregarPropietario(campos_adicionales, valoresA)
+                form.agregar(campos_adicionales, valoresA)
                 return self.form_valid(form)
             else:
                 return self.form_invalid(form)
@@ -94,26 +85,48 @@ class PropetarioListView(generic.edit.FormMixin, generic.ListView):
             data = request.POST.copy()
             self.cursor.execute("SELECT COUNT(*) FROM dbconnection_propietario")
             size = dictfetchall(self.cursor)
+            self.cursor.execute("SELECT * FROM dbconnection_camposadicionales as ca WHERE ca.tabla = 1")
+            camposA = dictfetchall(self.cursor)
+            valoresA = {}
+            for c in camposA:
+                key = "ca" + str(c['id'])
+                valoresA[key] = data.get(key) 
             data.update({'form-TOTAL_FORMS': size[0]['count'],
                         'form-INITIAL_FORMS': size[0]['count'],
                         'form-MAX_NUM_FORMS': ''})
-            print(data)
             formset = self.UpdateFormset(data)
-            updateId = None
+            count = 0
             form = None
-            if formset.is_valid():
-                for f in formset:
-                    updateId = f.prefix
-                    print(updateId)
-                    form = f
-                return self.form_valid(form)
-            else:
-                print(formset.errors)
-                return self.form_invalid(form)
-            # if form.is_valid():
-                # return self.form_valid(form)
-            # else:
-                # return self.form_invalid(form)
+            for f in formset:
+                if f.is_valid():
+                    f.actualizar(count, camposA, valoresA)
+                    return self.form_valid(form)
+                else:
+                    print(count)
+                    print(f.errors)
+                count += 1
+            return self.form_invalid(form)
+        elif 'deleteFila' in request.POST:
+            data = request.POST.copy()
+            self.cursor.execute("SELECT COUNT(*) FROM dbconnection_propietario")
+            size = dictfetchall(self.cursor)
+            data.update({'form-TOTAL_FORMS': size[0]['count'],
+                        'form-INITIAL_FORMS': size[0]['count'],
+                        'form-MAX_NUM_FORMS': ''})
+            formset = self.UpdateFormset(data)
+            count = 0
+            form = None
+            for f in formset:
+                if f.is_valid():
+                    f.eliminar(count)
+                    return self.form_valid(form)
+                else:
+                    print(count)
+                    print(f.errors)
+                count += 1
+            return self.form_invalid(form)
+            
+           
 
     def form_valid(self, form):
         return super().form_valid(form)
@@ -126,7 +139,7 @@ class PropetarioListView(generic.edit.FormMixin, generic.ListView):
         return self.second_form_class
 
     def get_queryset(self):
-        self.cursor.execute("SELECT * FROM dbconnection_propietario")
+        self.cursor.execute("SELECT * FROM dbconnection_propietario ORDER BY id")
         tabla = dictfetchall(self.cursor)
         self.cursor.execute(
             "SELECT * FROM dbconnection_camposadicionales as ca WHERE ca.tabla = 1")
@@ -142,7 +155,7 @@ class PropetarioListView(generic.edit.FormMixin, generic.ListView):
                 except:
                     prop['ca'+str(self.campos_adicionales[i]['id'])] = None
 
-        AgregarFormSet = formset_factory(AgregarPropietario, extra=len(tabla))
+        AgregarFormSet = formset_factory(PropietarioForm, extra=len(tabla))
         self.UpdateFormset = AgregarFormSet(initial=tabla)
 
         return tabla
@@ -194,7 +207,7 @@ class IntermediarioListView(generic.edit.FormMixin, generic.ListView):
     def post(self, request, *args, **kwargs):
         form = self.get_form()
         if form.is_valid():
-            form.agregarCampo(3)
+            form.agregar(3)
             return self.form_valid(form)
         else:
             return self.form_invalid(form)
@@ -212,7 +225,7 @@ class CompradorListView(generic.edit.FormMixin, generic.ListView):
     model = Comprador
     paginate_by = 10
     form_class = AgregarCampoForm
-    second_form_class = AgregarComprador
+    second_form_class = CompradorForm
 
     def get_success_url(self):
         return reverse('propiedades')
@@ -232,14 +245,14 @@ class CompradorListView(generic.edit.FormMixin, generic.ListView):
         if 'addCampo' in request.POST:
             form = self.get_form(self.get_form_class())
             if form.is_valid():
-                form.agregarCampo(2)
+                form.agregar(2)
                 return self.form_valid(form)
             else:
                 return self.form_invalid(form)
         elif 'addFila' in request.POST:
             form = self.get_form(self.get_second_form_class())
             if form.is_valid():
-                form.agregarPropiedad()
+                form.agregar()
                 return self.form_valid(form)
             else:
                 return self.form_invalid(form)
@@ -262,7 +275,7 @@ class PropiedadListView(generic.edit.FormMixin, generic.ListView):
     model = Propiedad
     paginate_by = 10
     form_class = AgregarCampoForm
-    second_form_class = AgregarPropiedad
+    second_form_class = PropiedadForm
 
     def get_success_url(self):
         return reverse('propiedades')
@@ -281,14 +294,14 @@ class PropiedadListView(generic.edit.FormMixin, generic.ListView):
         if 'addCampo' in request.POST:
             form = self.get_form(self.get_form_class())
             if form.is_valid():
-                form.agregarCampo(0)
+                form.agregar(0)
                 return self.form_valid(form)
             else:
                 return self.form_invalid(form)
         elif 'addFila' in request.POST:
             form = self.get_form(self.get_second_form_class())
             if form.is_valid():
-                form.agregarPropiedad()
+                form.agregar()
                 return self.form_valid(form)
             else:
                 return self.form_invalid(form)
@@ -306,32 +319,3 @@ class PropiedadDetailView(generic.ListView):
     """
     model = Propiedad
 
-
-class AgregarCampoView(generic.FormView):
-    # model = CamposAdicionales
-    # fields = ['nombre', 'tipo', 'tabla']
-    form_class = AgregarCampoForm
-    template_name = 'dbconnection/camposadicionales_form.html'
-
-    def form_valid(self, form):
-        form.agregarCampo()
-        return super().form_valid(form)
-
-    def get_success_url(self):
-        return reverse('index')
-
-
-"""
-def index(request):
-    # template = loader.get_template('dbconnection/index.html')
-    if request.method == 'POST':
-        form = QueryForm(request.POST)
-        if form.is_valid():
-            # return HttpResponse(form.cleaned_data)
-            output= form.send()
-            return HttpResponse(output)
-    else:
-        form = QueryForm()
-    return render(request, 'dbconnection/index.html', {'form': form})
-    # return HttpResponse(template.render(context, request))
-"""

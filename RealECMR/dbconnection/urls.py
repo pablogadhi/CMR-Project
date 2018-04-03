@@ -13,6 +13,5 @@ urlpatterns = [
     path('tweets/', views.TweetListView.as_view(), name='tweets'),
 
     path('propiedad/<int:pk>', views.PropiedadDetailView.as_view(), name='propiedad-detail'),
-    path('agregarCampo/', views.AgregarCampoView.as_view(), name='agregarCampo'),
     path('dummy/', views.dummy, name='dummy')
 ]
