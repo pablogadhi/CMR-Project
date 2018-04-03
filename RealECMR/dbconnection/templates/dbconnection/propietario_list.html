@@ -1,8 +1,34 @@
 {% extends "base_generic.html" %}
-{% load dbfilters %}
+<!--{% load dbfilters %}-->
 
 {% block content %}
-<h1>Lista de Propietarios</h1>
+
+{% with uFormSet=update_formset|makeArray vAdicionales=object_list|extraValues:campos_adicionales %}
+<script type="text/javascript">
+
+    $(document).on("click", ".updateB", function(){
+        var updateForms= {{uFormSet|safe}};
+        var camposA = {{campos_adicionales|safe}};
+        var valoresA = {{vAdicionales|safe}};
+        var token = "{{csrf_token}}";
+        var bIndex = $(this).html(); 
+        var current = updateForms[bIndex];
+        var uForm = $("#uForm");
+        uForm.html('');
+        uForm.append('<input name="csrfmiddlewaretoken" value='+token+' type="hidden">');
+        uForm.append(current);
+        for(i = 0; i < camposA.length; i++){
+            var cKey = 'ca' + i;
+            uForm.append('<p><label for="'+camposA[i].nombre+'">'+camposA[i].nombre+':&nbsp</label><input id="'+camposA[i].nombre+'" type="text" name="ca'+camposA[i].id+'" value="'+valoresA[bIndex][cKey]+'"></p>');
+        }
+        uForm.append('<input name="updateFila" type="submit" value="Actualizar" class="btn btn-success" style="float:right"/>');
+        uForm.append('<input name="deleteFila" type="submit" value="Eliminar" class="btn btn-danger" style="float:right"/>');
+    });
+
+</script>
+{% endwith %}
+
+<h1 id="proplista">Lista de Propietarios</h1>
 <hr>
 {% if propietario_list %}
 <ul>
@@ -26,7 +52,9 @@
         </tr>
         {% for propietario in propietario_list %}
         <tr>
-            <td>{{propietario.id}}</td>
+            <td>
+                <button type="button" class="btn btn-secondary updateB" data-toggle="modal" data-target="#updateModal">{{propietario.id}}</button>
+            </td>
             <td>{{propietario.activo}}</td>
             <td>{{propietario.nombre}}</td>
             <td>{{propietario.sexo}}</td>
@@ -39,7 +67,7 @@
             <td>{{propietario.direccion}}</td>
             <td>{{propietario.foto}}</td>
             {% for campo in campos_adicionales %}
-            <td>{{propietario|keyvalue:campo.id}}</td>
+            <td>{{propietario|extraKeyValue:campo.id}}</td>
             {% endfor %}
         </tr>
         {% endfor %}
@@ -68,5 +96,10 @@
     <p></p>
     {% endfor %}
     <input name='addFila' type="submit" value="Agregar" class="btn btn-primary" style="float:right"/>
+</form>
+{% endblock %}
+
+{% block updateFilaForm %}
+<form method="post" id="uForm">
 </form>
 {% endblock %}

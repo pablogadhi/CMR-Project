@@ -7,6 +7,7 @@ from django.views import generic
 from .dummy import generateDummy
 from django.urls import reverse
 from django.db import connection
+from django.forms import formset_factory, BaseFormSet
 
 
 def dictfetchall(cursor):
@@ -43,6 +44,8 @@ class PropetarioListView(generic.edit.FormMixin, generic.ListView):
     # model = Propietario
     cursor = connection.cursor()
     campos_adicionales = []
+    UpdateFormset = formset_factory(AgregarPropietario)
+
     context_object_name = 'propietario_list'
     template_name = 'dbconnection/propietario_list.html'
     paginate_by = 100
@@ -58,6 +61,8 @@ class PropetarioListView(generic.edit.FormMixin, generic.ListView):
         context['campos_adicionales'] = self.campos_adicionales
         context['form'] = self.get_form()
         context['second_form'] = self.get_form(self.get_second_form_class())
+        context['update_formset'] = self.UpdateFormset
+        context['uform_index'] = 0
         return context
 
     def post(self, request, *args, **kwargs):
@@ -71,11 +76,10 @@ class PropetarioListView(generic.edit.FormMixin, generic.ListView):
         elif 'addFila' in request.POST:
             form = self.get_form(self.get_second_form_class())
             if form.is_valid():
-                cursor = connection.cursor()
-                cursor.execute(
+                self.cursor.execute(
                     "SELECT * FROM dbconnection_camposadicionales as ca WHERE ca.tabla = 1")
                 valoresA = {}
-                campos_adicionales = dictfetchall(cursor)
+                campos_adicionales = dictfetchall(self.cursor)
                 for i in campos_adicionales:
                     key = "ca"+str(i['id'])
                     valoresA[key] = request.POST.get(key)
@@ -83,6 +87,30 @@ class PropetarioListView(generic.edit.FormMixin, generic.ListView):
                 return self.form_valid(form)
             else:
                 return self.form_invalid(form)
+        elif 'updateFila' in request.POST:
+            data = request.POST.copy()
+            self.cursor.execute("SELECT COUNT(*) FROM dbconnection_propietario")
+            size = dictfetchall(self.cursor)
+            data.update({'form-TOTAL_FORMS': size[0]['count'],
+                        'form-INITIAL_FORMS': size[0]['count'],
+                        'form-MAX_NUM_FORMS': ''})
+            print(data)
+            formset = self.UpdateFormset(data)
+            updateId = None
+            form = None
+            if formset.is_valid():
+                for f in formset:
+                    updateId = f.prefix
+                    print(updateId)
+                    form = f
+                return self.form_valid(form)
+            else:
+                print(formset.errors)
+                return self.form_invalid(form)
+            # if form.is_valid():
+                # return self.form_valid(form)
+            # else:
+                # return self.form_invalid(form)
 
     def form_valid(self, form):
         return super().form_valid(form)
@@ -101,14 +129,19 @@ class PropetarioListView(generic.edit.FormMixin, generic.ListView):
             "SELECT * FROM dbconnection_camposadicionales as ca WHERE ca.tabla = 1")
         self.campos_adicionales = dictfetchall(self.cursor)
         for prop in tabla:
-            self.cursor.execute("SELECT * FROM dbconnection_valoresadicionales as va WHERE va.id_tupla = %s", [prop["id"]])
+            self.cursor.execute(
+                "SELECT * FROM dbconnection_valoresadicionales as va WHERE va.id_tupla = %s", [prop["id"]])
             result = dictfetchall(self.cursor)
             for i in range(len(self.campos_adicionales)):
                 try:
-                    prop[str(self.campos_adicionales[i]['id'])] = result[i]["valor"]
+                    prop['ca'+str(self.campos_adicionales[i]['id'])
+                         ] = result[i]["valor"]
                 except:
-                    prop[str(self.campos_adicionales[i]['id'])] = None
-        
+                    prop['ca'+str(self.campos_adicionales[i]['id'])] = None
+
+        AgregarFormSet = formset_factory(AgregarPropietario, extra=len(tabla))
+        self.UpdateFormset = AgregarFormSet(initial=tabla)
+
         return tabla
 
 
