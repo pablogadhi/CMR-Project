@@ -101,4 +101,4 @@ ENV/
 .mypy_cache/
 
 #Django Migrations
-RealECMR/dbconnection/
+RealECMR/dbconnection/migrations/
