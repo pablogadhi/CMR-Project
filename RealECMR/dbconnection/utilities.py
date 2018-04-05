@@ -15,8 +15,8 @@ def resetAllTables(cursor):
     cursor.execute("DELETE FROM dbconnection_visita")
     cursor.execute("DELETE FROM dbconnection_tweet")
     cursor.execute("DELETE FROM dbconnection_administra")
-    cursor.execute("DELETE FROM dbconnection_camposadicionales")
     cursor.execute("DELETE FROM dbconnection_valoresadicionales")
+    cursor.execute("DELETE FROM dbconnection_camposadicionales")
     cursor.execute("DELETE FROM dbconnection_cantidadtuplas")
 
     cursor.execute("INSERT INTO dbconnection_cantidadtuplas VALUES (0,'propiedad',0)")

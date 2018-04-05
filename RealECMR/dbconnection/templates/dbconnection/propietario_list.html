@@ -30,7 +30,7 @@
 
 <h1 id="proplista">Lista de Propietarios</h1>
 <hr>
-{% if propietario_list %}
+{% if object_list %}
 <ul>
     <table>
         <tr>
@@ -50,7 +50,7 @@
             <th>{{i.nombre}}</th>
             {% endfor %}
         </tr>
-        {% for propietario in propietario_list %}
+        {% for propietario in object_list %}
         <tr>
             <td>
                 <button type="button" class="btn btn-secondary updateB" data-toggle="modal" data-target="#updateModal">{{propietario.id}}</button>

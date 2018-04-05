@@ -74,28 +74,39 @@ class CompradorForm(forms.Form):
     presupuesto = forms.FloatField(widget=forms.TextInput)
 
 
-class PropietarioForm(forms.Form):
-    activo = forms.BooleanField(initial=True, required=False)
-    nombre = forms.CharField(max_length=50)
-    TIPOSEXO = (
-        ('Femenino', 'Femenino'),
-        ('Masculino', 'Masculino'),
-    )
-    sexo = forms.ChoiceField(choices=TIPOSEXO)
-    edad = forms.IntegerField(widget=forms.TextInput)
-    telefono = forms.IntegerField(widget=forms.TextInput)
-    mail = forms.EmailField()
-    cuenta = forms.CharField(required=False)
-    fechaInicio = forms.DateField(
-        label='Fecha de Inicio', widget=forms.SelectDateWidget)
-    TIPOREP = (
-        ('Normal', 'Normal'),
-        ('Buena', 'Buena'),
-        ('Mala', 'Mala'),
-    )
-    reputacion = forms.ChoiceField(choices=TIPOREP)
-    foto = forms.FileField(required=False)
-    direccion = forms.CharField(max_length=50)
+class PropietarioForm(forms.ModelForm):
+    class Meta:
+        model = Propietario
+        fields = ['activo', 'nombre', 'sexo', 'edad', 'telefono', 'mail', 'cuenta', 'fechainicio', 'reputacion', 'foto', 'direccion']
+        widgets = {
+                'activo': forms.CheckboxInput(attrs={'initial':True, 'required':False}),
+                'edad': forms.TextInput(),
+                'telefono': forms.TextInput(),
+                'fechainicio': forms.SelectDateWidget(),
+                'foto': forms.FileInput(attrs={'required':False}),
+                }
+
+    # activo = forms.BooleanField(initial=True, required=False)
+    # nombre = forms.CharField(max_length=500)
+    # TIPOSEXO = (
+        # ('Femenino', 'Femenino'),
+        # ('Masculino', 'Masculino'),
+    # )
+    # sexo = forms.ChoiceField(choices=TIPOSEXO)
+    # edad = forms.IntegerField(widget=forms.TextInput)
+    # telefono = forms.IntegerField(widget=forms.TextInput)
+    # mail = forms.EmailField()
+    # cuenta = forms.CharField(required=False)
+    # fechaInicio = forms.DateField(
+        # label='Fecha de Inicio', widget=forms.SelectDateWidget)
+    # TIPOREP = (
+        # ('Normal', 'Normal'),
+        # ('Buena', 'Buena'),
+        # ('Mala', 'Mala'),
+    # )
+    # reputacion = forms.ChoiceField(choices=TIPOREP)
+    # foto = forms.FileField(required=False)
+    # direccion = forms.CharField(max_length=500)
 
     def agregar(self, camposAdicionales, valoresAdicionales):
         data = self.cleaned_data
