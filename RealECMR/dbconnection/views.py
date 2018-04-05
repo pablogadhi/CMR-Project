@@ -269,33 +269,115 @@ class IntermediarioListView(generic.edit.FormMixin, generic.ListView):
     """
     Generic class-based view for a list of Intermediario.
     """
-    model = Intermediario
-    paginate_by = 10
+    cursor = connection.cursor()
+    template_name = 'dbconnection/intermediario_list.html'
+    paginate_by = 100
     form_class = AgregarCampoForm
+    second_form_class = IntermediarioForm
+
+    def __init__(self):
+        self.cursor.execute("SELECT * FROM dbconnection_intermediario ORDER BY id")
+        self.tabla = dictfetchall(self.cursor)
+        self.cursor.execute(
+            "SELECT * FROM dbconnection_camposadicionales as ca WHERE ca.tabla = 3")
+        self.campos_adicionales = dictfetchall(self.cursor)
+        for prop in self.tabla:
+            self.cursor.execute(
+                "SELECT * FROM dbconnection_valoresadicionales as va WHERE va.id_tupla = %s", [prop["id"]])
+            result = dictfetchall(self.cursor)
+            for i in range(len(self.campos_adicionales)):
+                try:
+                    prop['ca'+str(self.campos_adicionales[i]['id'])
+                         ] = result[i]["valor"]
+                except:
+                    prop['ca'+str(self.campos_adicionales[i]['id'])] = None
+
+        self.AgregarFormSet = formset_factory(self.get_second_form_class(), extra=0)
+        self.UpdateFormset = self.AgregarFormSet(initial=self.tabla)
+        self.size = len(self.tabla)
 
     def get_success_url(self):
         return reverse('intermediarios')
 
     def get_context_data(self, **kwargs):
-        cursor = connection.cursor()
-        cursor.execute(
-            "SELECT * FROM dbconnection_camposadicionales as ca WHERE ca.tabla = 3")
+        self.object_list = self.get_queryset()
         context = super().get_context_data(**kwargs)
-        context['campos_adicionales'] = dictfetchall(cursor)
+        context['campos_adicionales'] = self.campos_adicionales
         context['form'] = self.get_form()
+        context['second_form'] = self.get_form(self.get_second_form_class())
+        context['update_formset'] = self.UpdateFormset
         return context
 
     def post(self, request, *args, **kwargs):
-        form = self.get_form()
-        if form.is_valid():
-            form.agregar(3)
-            return self.form_valid(form)
-        else:
+        if 'addCampo' in request.POST:
+            form = self.get_form(self.get_form_class())
+            if form.is_valid():
+                form.agregar(3)
+                return self.form_valid(form)
+            else:
+                return self.form_invalid(form)
+        elif 'addFila' in request.POST:
+            form = self.get_form(self.get_second_form_class())
+            if form.is_valid():
+                valoresA = {}
+                for i in self.campos_adicionales:
+                    key = "ca"+str(i['id'])
+                    valoresA[key] = request.POST.get(key)
+                form.agregar(self.campos_adicionales, valoresA)
+                return self.form_valid(form)
+            else:
+                return self.form_invalid(form)
+        elif 'updateFila' in request.POST:
+            data = request.POST.copy()
+            valoresA = {}
+            for c in self.campos_adicionales:
+                key = "ca" + str(c['id'])
+                valoresA[key] = data.get(key) 
+            data.update({'form-TOTAL_FORMS': self.size,
+                        'form-INITIAL_FORMS': self.size,
+                        'form-MAX_NUM_FORMS': ''})
+            formset = self.AgregarFormSet(data)
+            count = 0
+            form = None
+            for f in formset:
+                if f.is_valid():
+                    f.actualizar(self.tabla[count]['id'], self.campos_adicionales, valoresA)
+                    return self.form_valid(form)
+                else:
+                    print(count)
+                    print(f.errors)
+                count += 1
+            return self.form_invalid(form)
+        elif 'deleteFila' in request.POST:
+            data = request.POST.copy()
+            data.update({'form-TOTAL_FORMS': self.size,
+                        'form-INITIAL_FORMS': self.size,
+                        'form-MAX_NUM_FORMS': ''})
+            formset = self.AgregarFormSet(data)
+            count = 0
+            form = None
+            for f in formset:
+                if f.is_valid():
+                    f.eliminar(self.tabla[count]['id'])
+                    return self.form_valid(form)
+                else:
+                    print(count)
+                    print(f.errors)
+                count += 1
             return self.form_invalid(form)
 
     def form_valid(self, form):
         return super().form_valid(form)
 
+    def form_invalid(self, form):
+        print("Invalid Form!")
+        return super().form_invalid(form)
+
+    def get_second_form_class(self):
+        return self.second_form_class
+
+    def get_queryset(self):
+        return self.tabla
 
 class PropiedadListView(generic.edit.FormMixin, generic.ListView):
     """

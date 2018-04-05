@@ -1,57 +1,85 @@
 {% extends "base_generic.html" %}
+{% load dbfilters %}
 
 {% block content %}
-    <h1>Lista de Intermediarios</h1>
-    <hr>
-    {% if intermediario_list %}
-    <ul>
-      <table>
+{% include "scripts_template.html" %}
+
+<h1>Lista de Intermediarios</h1>
+<hr>
+{% if object_list %}
+<ul>
+    <table>
         <tr>
-          <th>ID</th>
-          <th>Activo</th>
-          <th>Nombre</th>
-          <th>Sexo</th>
-          <th>Edad</th>
-          <th>Telefono</th>
-          <th>Correo</th>
-          <th>Twitter</th>
-          <th>FechaInicio</th>
-          <th>Reputacion</th>
-          <th>Comision</th>
-          <th>Experiencia</th>
-          <th>Foto</th>
-          {% for i in campos_adicionales %}
+            <th>ID</th>
+            <th>Activo</th>
+            <th>Nombre</th>
+            <th>Sexo</th>
+            <th>Edad</th>
+            <th>Telefono</th>
+            <th>Correo</th>
+            <th>Twitter</th>
+            <th>FechaInicio</th>
+            <th>Reputacion</th>
+            <th>Comision</th>
+            <th>Experiencia</th>
+            <th>Foto</th>
+            {% for i in campos_adicionales %}
             <th>{{i.nombre}}</th>
-          {% endfor %}
+            {% endfor %}
         </tr>
-      {% for intermediario in intermediario_list %}
+        {% for intermediario in object_list %}
         <tr>
-          <td>{{intermediario.id}}</td>
-          <td>{{intermediario.activo}}</td>
-          <td>{{intermediario.nombre}}</td>
-          <td>{{intermediario.sexo}}</td>
-          <td>{{intermediario.edad}} años</td>
-          <td>{{intermediario.telefono}}</td>
-          <td>{{intermediario.mail}}</td>
-          <td>{{intermediario.cuenta}}</td>
-          <td>{{intermediario.fechaInicio}}</td>
-          <td>{{intermediario.reputacion}}</td>
-          <td>{{intermediario.comision}} %</td>
-          <td>{{intermediario.experiencia}} años</td>
-          <td>{{intermediario.foto}}</td>
+            <td>
+                <button type="button" class="btn btn-secondary updateB" data-toggle="modal" data-target="#updateModal">{{intermediario.id}}</button>
+            </td>
+            <td>{{intermediario.activo}}</td>
+            <td>{{intermediario.nombre}}</td>
+            <td>{{intermediario.sexo}}</td>
+            <td>{{intermediario.edad}} años</td>
+            <td>{{intermediario.telefono}}</td>
+            <td>{{intermediario.mail}}</td>
+            <td>{{intermediario.cuenta}}</td>
+            <td>{{intermediario.fechaInicio}}</td>
+            <td>{{intermediario.reputacion}}</td>
+            <td>{{intermediario.comision}} %</td>
+            <td>{{intermediario.experiencia}} años</td>
+            <td>{{intermediario.foto}}</td>
+            {% for campo in campos_adicionales %}
+            <td>{{intermediario|extraKeyValue:campo.id}}</td>
+            {% endfor %}
         </tr>
-      {% endfor %}
+        {% endfor %}
     </table>
-    </ul>
-    {% else %}
-      <p>No hay intermediarios registrados.</p>
-    {% endif %}       
+</ul>
+{% else %}
+<p>No hay intermediarios registrados.</p>
+{% endif %}
 {% endblock %}
 
 {% block addform %}
-  <form method="post">
-      {% csrf_token %} 
-      {{ form.as_p }}
-      <input type="submit" value="Agregar" class="btn btn-primary" style="float:right"/>
-  </form>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input name="addCampo" type="submit" value="Agregar" class="btn btn-primary" style="float:right"/>
+</form>
 {% endblock %}
+
+{% block addFilaForm %}
+<form method="post">
+    {% csrf_token %}
+    {{ second_form.as_p }}
+    {% for extra in campos_adicionales %}
+    <label for="{{extra.nombre}}">{{extra.nombre}}: </label>
+    <input id="{{extra.nombre}}" type="text" name="ca{{extra.id}}">
+    <p></p>
+    {% endfor %}
+    <input name='addFila' type="submit" value="Agregar" class="btn btn-primary" style="float:right"/>
+</form>
+{% endblock %}
+
+{% block updateFilaForm %}
+<form method="post" id="uForm">
+</form>
+{% endblock %}
+
+

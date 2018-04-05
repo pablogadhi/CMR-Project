@@ -2,7 +2,7 @@
 {% load dbfilters %}
 
 {% block content %}
-    
+
 {% include "scripts_template.html" %}
 
 <h1>Lista de Compradores</h1>
@@ -15,54 +15,54 @@
 <hr>
 {% if object_list %}
 <ul>
-  <table>
-    <tr>
-      <th>ID</th>
-      <th>Activo</th>
-      <th>Nombre</th>
-      <th>Sexo</th>
-      <th>Edad</th>
-      <th>Telefono</th>
-      <th>Correo</th>
-      <th>Twitter</th>
-      <th>FechaInicio</th>
-      <th>Reputacion</th>
-      <th>Busca cerca de</th>
-      <th>Busca</th>
-      <th>Presupuesto</th>
-      <th>Foto</th>
-      {% for i in campos_adicionales %}
-      <th>{{i.nombre}}</th>
-      {% endfor %}
-    </tr>
-  {% for comprador in object_list %}
-    <tr>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Activo</th>
+            <th>Nombre</th>
+            <th>Sexo</th>
+            <th>Edad</th>
+            <th>Telefono</th>
+            <th>Correo</th>
+            <th>Twitter</th>
+            <th>FechaInicio</th>
+            <th>Reputacion</th>
+            <th>Busca cerca de</th>
+            <th>Busca</th>
+            <th>Presupuesto</th>
+            <th>Foto</th>
+            {% for i in campos_adicionales %}
+            <th>{{i.nombre}}</th>
+            {% endfor %}
+        </tr>
+        {% for comprador in object_list %}
+        <tr>
             <td>
                 <button type="button" class="btn btn-secondary updateB" data-toggle="modal" data-target="#updateModal">{{comprador.id}}</button>
             </td>
-          <td>{{comprador.activo}}</td>
-          <td>{{comprador.nombre}}</td>
-          <td>{{comprador.sexo}}</td>
-          <td>{{comprador.edad}}</td>
-          <td>{{comprador.telefono}}</td>
-          <td>{{comprador.mail}}</td>
-          <td>{{comprador.cuenta}}</td>
-          <td>{{comprador.fechaInicio}}</td>
-          <td>{{comprador.reputacion}}</td>
-          <td>{{comprador.zona}}</td>
-          <td>{{comprador.tipoPropiedad}}</td>
-          <td>{{comprador.presupuesto}}</td>
-          <td>{{comprador.foto}}</td>
-          {% for campo in campos_adicionales %}
-          <td>{{comprador|extraKeyValue:campo.id}}</td>
-          {% endfor %}
-    </tr>
-  {% endfor %}
-  </table>
+            <td>{{comprador.activo}}</td>
+            <td>{{comprador.nombre}}</td>
+            <td>{{comprador.sexo}}</td>
+            <td>{{comprador.edad}}</td>
+            <td>{{comprador.telefono}}</td>
+            <td>{{comprador.mail}}</td>
+            <td>{{comprador.cuenta}}</td>
+            <td>{{comprador.fechaInicio}}</td>
+            <td>{{comprador.reputacion}}</td>
+            <td>{{comprador.zona}}</td>
+            <td>{{comprador.tipoPropiedad}}</td>
+            <td>{{comprador.presupuesto}}</td>
+            <td>{{comprador.foto}}</td>
+            {% for campo in campos_adicionales %}
+            <td>{{comprador|extraKeyValue:campo.id}}</td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </table>
 </ul>
-    {% else %}
-      <p>No hay compradores registrados.</p>
-    {% endif %}       
+{% else %}
+<p>No hay compradores registrados.</p>
+{% endif %}
 {% endblock %}
 
 {% block addform %}
