@@ -1,32 +1,9 @@
 {% extends "base_generic.html" %}
-<!--{% load dbfilters %}-->
+{% load dbfilters %}
 
 {% block content %}
 
-{% with uFormSet=update_formset|makeDict:object_list vAdicionales=object_list|extraValues:campos_adicionales %}
-<script type="text/javascript">
-
-    $(document).on("click", ".updateB", function(){
-        var updateForms= {{uFormSet|safe}};
-        var camposA = {{campos_adicionales|safe}};
-        var valoresA = {{vAdicionales|safe}};
-        var token = "{{csrf_token}}";
-        var bIndex = $(this).html(); 
-        var current = updateForms[bIndex];
-        var uForm = $("#uForm");
-        uForm.html('');
-        uForm.append('<input name="csrfmiddlewaretoken" value='+token+' type="hidden">');
-        uForm.append(current);
-        for(i = 0; i < camposA.length; i++){
-            var cKey = 'ca' + i;
-            uForm.append('<p><label for="'+camposA[i].nombre+'">'+camposA[i].nombre+':&nbsp</label><input id="'+camposA[i].nombre+'" type="text" name="ca'+camposA[i].id+'" value="'+valoresA[bIndex][cKey]+'"></p>');
-        }
-        uForm.append('<input name="updateFila" type="submit" value="Actualizar" class="btn btn-success" style="float:right"/>');
-        uForm.append('<input name="deleteFila" type="submit" value="Eliminar" class="btn btn-danger" style="float:right"/>');
-    });
-
-</script>
-{% endwith %}
+{% include "scripts_template.html" %}
 
 <h1 id="proplista">Lista de Propietarios</h1>
 <hr>
@@ -103,3 +80,4 @@
 <form method="post" id="uForm">
 </form>
 {% endblock %}
+

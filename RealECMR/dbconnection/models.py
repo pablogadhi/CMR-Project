@@ -62,7 +62,7 @@ class Comprador(Cliente):
         ('Terreno','Terreno'),
         ('Otro','Otro')
     )
-    tipoPropiedad = models.CharField(max_length=10, choices=TIPOBIEN, blank=True)
+    tipopropiedad = models.CharField(max_length=20, choices=TIPOBIEN, blank=True)
     presupuesto = models.FloatField(default=0.0)
 
 class Intermediario(Cliente):
