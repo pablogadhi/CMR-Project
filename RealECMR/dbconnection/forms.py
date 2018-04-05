@@ -1,7 +1,8 @@
 from django import forms
 from django.db import connection
 from .models import *
-from .utilities import dictfetchall
+from .views import *
+#from .utilities import dictfetchall
 
 
 class AgregarCampoForm(forms.Form):
@@ -26,6 +27,10 @@ class AgregarCampoForm(forms.Form):
         cursor.execute("UPDATE dbconnection_cantidadtuplas SET cantidad=%s WHERE nombre_tabla=%s", [
                        id+1, 'camposadicionales'])
 
+class FilPropietarioForm(forms.Form):
+    nombre = forms.CharField(max_length=50, required=False)
+    edad = forms.IntegerField(widget=forms.TextInput, required=False, initial='0')
+    direccion = forms.CharField(max_length=50, required=False)
 
 class PropiedadForm(forms.ModelForm):
     class Meta:
@@ -36,6 +41,12 @@ class PropiedadForm(forms.ModelForm):
                 'foto': forms.FileInput(attrs={'required': False}),
                 'tamano': forms.TextInput()
                 }
+        return nombre,edad,direccion
+        direccion = data.get("direccion")
+        edad = data.get("edad")
+        nombre = data.get("nombre")
+    def filtrar(self):
+        data= self.cleaned_data
 
     def agregar(self, camposAdicionales, valoresAdicionales):
         data = self.cleaned_data

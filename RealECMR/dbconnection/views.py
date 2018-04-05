@@ -10,6 +10,8 @@ from django.db import connection
 from django.forms import formset_factory, BaseFormSet
 from .utilities import *
 
+ele_propietario= ['%%',0,'%%']
+
 def index(request):
     num_propietarios = Propietario.objects.all().count()
     num_compradores = Comprador.objects.all().count()
@@ -70,11 +72,12 @@ class PropetarioListView(generic.edit.FormMixin, generic.ListView):
         return reverse('propietarios')
 
     def get_context_data(self, **kwargs):
-        self.object_list = self.get_queryset()
+        #self.object_list = self.get_queryset()
         context = super().get_context_data(**kwargs)
         context['campos_adicionales'] = self.campos_adicionales
         context['form'] = self.get_form()
         context['second_form'] = self.get_form(self.get_second_form_class())
+        context['third_form'] = self.get_form(self.get_third_form_class())
         context['update_formset'] = self.UpdateFormset
         return context
 
@@ -145,6 +148,9 @@ class PropetarioListView(generic.edit.FormMixin, generic.ListView):
 
     def get_second_form_class(self):
         return self.second_form_class
+
+    def get_third_form_class(self):
+        return self.third_form_class
 
     def get_queryset(self):
         return self.tabla
