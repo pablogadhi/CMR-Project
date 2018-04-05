@@ -27,22 +27,90 @@ class AgregarCampoForm(forms.Form):
                        id+1, 'camposadicionales'])
 
 
-class PropiedadForm(forms.Form):
-    propietario = forms.IntegerField(widget=forms.TextInput)
-    intermediario = forms.IntegerField(widget=forms.TextInput)
-    direccion = forms.CharField(max_length=50)
-    valuacion = forms.FloatField(widget=forms.TextInput)
-    TIPOBIEN = (
-        ('Apartamento', 'Apartamento'),
-        ('Casa', 'Casa'),
-        ('Terreno', 'Terreno'),
-        ('Otro', 'Otro')
-    )
-    tipo = forms.ChoiceField(choices=TIPOBIEN)
-    informacion = forms.CharField(max_length=500)
-    foto = forms.FileField(required=False)
-    tamano = forms.DecimalField(widget=forms.TextInput)
+class PropiedadForm(forms.ModelForm):
+    class Meta:
+        model = Propiedad
+        fields = ['propietario', 'intermediario', 'direccion', 'valuacion', 'tipo', 'informacion', 'foto', 'tamano']
+        widgets = {
+                'valuacion': forms.TextInput(),
+                'foto': forms.FileInput(attrs={'required': False}),
+                'tamano': forms.TextInput()
+                }
 
+    def agregar(self, camposAdicionales, valoresAdicionales):
+        data = self.cleaned_data
+        cursor = connection.cursor()
+
+        cursor.execute("SELECT cantidad FROM dbconnection_cantidadtuplas WHERE nombre_tabla='propiedad'")
+        id = dictfetchall(cursor)
+        id = id[0]['cantidad']
+        propietario = data.get('propietario')
+        propietario = propietario.id
+        intermediario = data.get('intermediario')
+        intermediario = intermediario.id
+        direccion = data.get('direccion')
+        valuacion = data.get('valuacion')
+        tipo = data.get('tipo')
+        informacion = data.get('informacion')
+        foto = None
+        tamano = data.get('tamano')
+
+        cursor.execute("INSERT INTO dbconnection_propiedad VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)",
+                        [id, direccion, valuacion, tipo, informacion, foto, tamano, intermediario, propietario])
+        cursor.execute("UPDATE dbconnection_cantidadtuplas SET cantidad=%s WHERE nombre_tabla=%s", [id+1, 'propiedad'])
+
+        cursor.execute("SELECT cantidad FROM dbconnection_cantidadtuplas WHERE nombre_tabla='valoresadicionales'")
+        cantidadCA = dictfetchall(cursor)
+        cantidadCA = cantidadCA[0]['cantidad']
+        for campo in camposAdicionales:
+            id_extra = cantidadCA
+            id_campo = campo.get("id")
+            id_tupla = id
+            campoKey = "ca" + str(id_campo)
+            valor = valoresAdicionales.get(campoKey)
+            cursor.execute("INSERT INTO dbconnection_valoresadicionales VALUES (%s, %s, %s, %s)",
+                            [id_extra, id_tupla, valor, id_campo])
+            cantidadCA += 1
+        cursor.execute("UPDATE dbconnection_cantidadtuplas SET cantidad=%s WHERE nombre_tabla=%s", [cantidadCA, 'valoresadicionales'])
+
+    def actualizar(self, idTupla, camposAdicionales, valoresAdicionales):
+        data = self.cleaned_data
+        cursor = connection.cursor()
+
+        propietario = data.get('propietario')
+        propietario = propietario.id
+        intermediario = data.get('intermediario')
+        intermediario = intermediario.id
+        direccion = data.get('direccion')
+        valuacion = data.get('valuacion')
+        tipo = data.get('tipo')
+        informacion = data.get('informacion')
+        foto = None
+        tamano = data.get('tamano')
+
+        cursor.execute("UPDATE dbconnection_propiedad SET id=%s, propietario_id=%s, intermediario_id=%s, direccion=%s, valuacion=%s, tipo=%s, informacion=%s, foto=%s, tamano=%s WHERE id=%s",
+                        [idTupla, propietario, intermediario, direccion, valuacion, tipo, informacion, foto, tamano, idTupla])
+
+        for campo in camposAdicionales:
+            id_campo = campo.get("id")
+            campoKey = "ca" + str(id_campo)
+            valor = valoresAdicionales.get(campoKey)
+            cursor.execute("SELECT id FROM dbconnection_valoresadicionales WHERE id_tupla=%s AND campo_id=%s",
+                            [idTupla, id_campo])
+            vaId = dictfetchall(cursor)
+            if vaId != []:
+                cursor.execute("UPDATE dbconnection_valoresadicionales SET valor=%s WHERE id_tupla=%s AND campo_id=%s",
+                            [valor, idTupla, id_campo])
+            else:
+                id_extra = ValoresAdicionales.objects.count()
+                cursor.execute("INSERT INTO dbconnection_valoresadicionales VALUES (%s, %s, %s, %s)",
+                            [id_extra, idTupla, valor, id_campo])
+
+
+    def eliminar(self, idTupla):
+        cursor = connection.cursor()
+        cursor.execute("DELETE FROM dbconnection_propiedad WHERE id=%s", [idTupla])
+        cursor.execute("DELETE FROM dbconnection_valoresadicionales WHERE id=%s", [idTupla])
 
 class CompradorForm(forms.ModelForm):
     class Meta:

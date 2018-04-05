@@ -1,62 +1,75 @@
 {% extends "base_generic.html" %}
+{% load dbfilters %}
 
 {% block content %}
-    <h1>Lista de Propiedades</h1>
-    <hr>
-    {% if propiedad_list %}
-    <ul>
-      <table>
+{% include "scripts_template.html" %}
+<h1>Lista de Propiedades</h1>
+<hr>
+{% if object_list %}
+<ul>
+    <table>
         <tr>
-          <th>ID</th>
-          <th>Direccion</th>
-          <th>Propietario</th>
-          <th>Intermediario</th>
-          <th>Tipo</th>
-          <th>Tamaño</th>
-          <th>Valuacion</th>
-          <th>Informacion</th>
-          <th>Foto</th>
-          {% for i in campos_adicionales %}
-          <th>{{i.nombre}}</th>
-          {% endfor %}
+            <th>ID</th>
+            <th>Direccion</th>
+            <th>Propietario</th>
+            <th>Intermediario</th>
+            <th>Tipo</th>
+            <th>Tamaño</th>
+            <th>Valuacion</th>
+            <th>Informacion</th>
+            <th>Foto</th>
+            {% for i in campos_adicionales %}
+            <th>{{i.nombre}}</th>
+            {% endfor %}
         </tr>
-      {% for propiedad in propiedad_list %}
-      <tr>
-          <td>{{propiedad.id}}</td>
-          <td>{{propiedad.direccion}}</td>
-          <td>{{propiedad.propietario}}</td>
-          <td>{{propiedad.intermediario}}</td>
-          <td>{{propiedad.tipo}}</td>
-          <td>{{propiedad.tamano}}</td>
-          <td>{{propiedad.valuacion}}</td>
-          <td>{{propiedad.informacion}}</td>
-          <td>{{propiedad.foto}}</td>
+        {% for propiedad in object_list %}
+        <tr>
+            <td>
+                <button type="button" class="btn btn-secondary updateB" data-toggle="modal" data-target="#updateModal">{{propiedad.id}}</button>
+            </td>
+            <td>{{propiedad.direccion}}</td>
+            <td>{{propiedad.propietario}}</td>
+            <td>{{propiedad.intermediario}}</td>
+            <td>{{propiedad.tipo}}</td>
+            <td>{{propiedad.tamano}}</td>
+            <td>{{propiedad.valuacion}}</td>
+            <td>{{propiedad.informacion}}</td>
+            <td>{{propiedad.foto}}</td>
+            {% for campo in campos_adicionales %}
+            <td>{{propiedad|extraKeyValue:campo.id}}</td>
+            {% endfor %}
         </tr>
-      {% endfor %}
-      </table>
-    </ul>
-    {% else %}
-      <p>No hay propiedades registradas.</p>
-    {% endif %}       
+        {% endfor %}
+    </table>
+</ul>
+{% else %}
+<p>No hay propiedades registradas.</p>
+{% endif %}
 {% endblock %}
 
 {% block addform %}
-  <form method="post">
-      {% csrf_token %} 
-      {{ form.as_p }}
-      <input name='addCampo' type="submit" value="Agregar" class="btn btn-primary" style="float:right"/>
-  </form>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input name="addCampo" type="submit" value="Agregar" class="btn btn-primary" style="float:right"/>
+</form>
 {% endblock %}
 
 {% block addFilaForm %}
-  <form method="post">
-      {% csrf_token %} 
-      {{ second_form.as_p }}
-      {% for extra in campos_adicionales %}
-      <label for="{{extra.nombre}}">{{extra.nombre}}: </label>
-      <input id="{{extra.nombre}}" type="text" name="{extra.nombre}}">
-      <p></p>
-      {% endfor %}
-      <input name='addFila' type="submit" value="Agregar" class="btn btn-primary" style="float:right"/>
-  </form>
+<form method="post">
+    {% csrf_token %}
+    {{ second_form.as_p }}
+    {% for extra in campos_adicionales %}
+    <label for="{{extra.nombre}}">{{extra.nombre}}: </label>
+    <input id="{{extra.nombre}}" type="text" name="ca{{extra.id}}">
+    <p></p>
+    {% endfor %}
+    <input name='addFila' type="submit" value="Agregar" class="btn btn-primary" style="float:right"/>
+</form>
 {% endblock %}
+
+{% block updateFilaForm %}
+<form method="post" id="uForm">
+</form>
+{% endblock %}
+
