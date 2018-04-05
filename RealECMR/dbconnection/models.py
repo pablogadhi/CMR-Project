@@ -27,6 +27,9 @@ class Cliente(models.Model):
 
     def get_absolute_url(self):
         return reverse('detalle-cliente',args=[str(self.id)])
+
+    def __str__(self):
+       return str(self.nombre)
     
     class Meta:
         abstract = True
@@ -43,7 +46,7 @@ class Propiedad(models.Model):
         ('Terreno','Terreno'),
         ('Otro','Otro')
     )
-    tipo = models.CharField(max_length=10, choices=TIPOBIEN, blank=True)
+    tipo = models.CharField(max_length=12, choices=TIPOBIEN, blank=True)
     informacion = models.CharField(max_length=500, null=True)
     foto = models.ImageField(null=True)
     tamano = models.DecimalField(decimal_places=2, max_digits=8, default=0.00, null=True)
@@ -62,7 +65,7 @@ class Comprador(Cliente):
         ('Terreno','Terreno'),
         ('Otro','Otro')
     )
-    tipoPropiedad = models.CharField(max_length=10, choices=TIPOBIEN, blank=True)
+    tipoPropiedad = models.CharField(max_length=12, choices=TIPOBIEN, blank=True)
     presupuesto = models.FloatField(default=0.0)
 
 class Intermediario(Cliente):
@@ -75,6 +78,7 @@ class Visita(models.Model):
     propiedad = models.ForeignKey('Propiedad', on_delete=models.CASCADE, default=0)
     intermediario = models.ForeignKey('Intermediario', on_delete=models.CASCADE, default=0)
     fecha = models.DateField(null=True)
+
 
 class Tweet(models.Model):
     id = models.AutoField(primary_key=True)

@@ -1,0 +1,24 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+    <h1>Prueba</h1>
+    <hr>
+    {% if tweet_list %}
+    <ul>
+      <table>
+        <tr>
+          <th>ID</th>
+          <th>Comprador</th>
+        </tr>
+      {% for tweet in tweet_list %}
+        <tr>
+          <td>{{tweet.id}}</td>
+          <td>{{tweet.comprador}}</td>
+        </tr>
+      {% endfor %}
+      </table>
+    </ul>
+    {% else %}
+      <p>Prueba</p>
+    {% endif %}       
+{% endblock %}

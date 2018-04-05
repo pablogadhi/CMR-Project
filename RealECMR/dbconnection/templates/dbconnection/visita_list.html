@@ -1,30 +1,40 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
-    <h1>Interacciones entre Compradores y Propiedades</h1>
+    <h1>Visitas por comprador</h1>
     <hr>
     {% if visita_list %}
+    {{visita_list}}
     <ul>
       <table>
         <tr>
-          <th>ID</th>
           <th>Comprador</th>
-          <th>Propiedad</th>
-          <th>Atendido por:</th>
-          <th>Fecha</th>
+          <td>fecha</th>
+          <td>Propiedad</th>
+          <td>Atendido por:</th>
         </tr>
-      {% for visita in visita_list %}
+      {% regroup visita_list by comprador_nombre as comprador_list%}
+      {% for comprador in comprador_list %}
         <tr>
-          <td>{{visita.id}}</td>
-          <td>{{visita.comprador}}</td>
-          <td>{{visita.propiedad}}</td>
-          <td>{{visita.intermediario}}</td>
-          <td>{{visita.fecha}}</td>
+            <th rowspan="3">{{comprador.grouper}}
+              <ul>
+                <li>holis </li>
+              </ul>
+            </th>
         </tr>
+        {% for visita in comprador.list%}
+          <tr>
+            <td>{{visita.fecha}}<td>
+            
+          </tr>  
+        {% endfor %}
       {% endfor %}
+
       </table>
+      {% else %}
+      <p>No hay visitas.</p>
+    {% endif %}      
     </ul>
-    {% else %}
-      <p>No hay interacciones etre compradores y propiedades.</p>
-    {% endif %}       
+    
+          
 {% endblock %}

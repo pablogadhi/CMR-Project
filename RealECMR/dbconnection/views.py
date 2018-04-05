@@ -10,6 +10,8 @@ from django.db import connection
 from django.forms import formset_factory, BaseFormSet
 from .utilities import dictfetchall
 
+ele_propietario= ['%%',0,'%%']
+
 def index(request):
     num_propietarios = Propietario.objects.all().count()
     num_compradores = Comprador.objects.all().count()
@@ -45,16 +47,18 @@ class PropetarioListView(generic.edit.FormMixin, generic.ListView):
     paginate_by = 100
     form_class = AgregarCampoForm
     second_form_class = PropietarioForm
-
+    third_form_class = FilPropietarioForm
+   
     def get_success_url(self):
         return reverse('propietarios')
 
     def get_context_data(self, **kwargs):
-        self.object_list = self.get_queryset()
+        #self.object_list = self.get_queryset()
         context = super().get_context_data(**kwargs)
         context['campos_adicionales'] = self.campos_adicionales
         context['form'] = self.get_form()
         context['second_form'] = self.get_form(self.get_second_form_class())
+        context['third_form'] = self.get_form(self.get_third_form_class())
         context['update_formset'] = self.UpdateFormset
         context['uform_index'] = 0
         return context
@@ -125,8 +129,17 @@ class PropetarioListView(generic.edit.FormMixin, generic.ListView):
                     print(f.errors)
                 count += 1
             return self.form_invalid(form)
-            
-           
+        if 'filtrar' in request.POST:
+            form = self.get_form(self.get_third_form_class())
+            if form.is_valid():
+                elementos=form.filtrar()
+                global ele_propietario
+                ele_propietario[0]=elementos[0]
+                ele_propietario[1]=elementos[1]
+                ele_propietario[2]=elementos[2]
+                return self.form_valid(form)
+            else:
+                return self.form_invalid(form)
 
     def form_valid(self, form):
         return super().form_valid(form)
@@ -138,8 +151,13 @@ class PropetarioListView(generic.edit.FormMixin, generic.ListView):
     def get_second_form_class(self):
         return self.second_form_class
 
+    def get_third_form_class(self):
+        return self.third_form_class
+
     def get_queryset(self):
-        self.cursor.execute("SELECT * FROM dbconnection_propietario ORDER BY id")
+        self.cursor.execute(
+        	"SELECT * FROM dbconnection_propietario WHERE nombre LIKE %s AND edad > %s AND direccion LIKE %s ORDER BY id",['%'+ele_propietario[0]+'%',ele_propietario[1],'%'+ele_propietario[2]+'%'])
+        print(chr(39)+'%'+'e'+'%'+chr(39))
         tabla = dictfetchall(self.cursor)
         self.cursor.execute(
             "SELECT * FROM dbconnection_camposadicionales as ca WHERE ca.tabla = 1")
@@ -157,7 +175,6 @@ class PropetarioListView(generic.edit.FormMixin, generic.ListView):
 
         AgregarFormSet = formset_factory(PropietarioForm, extra=len(tabla))
         self.UpdateFormset = AgregarFormSet(initial=tabla)
-
         return tabla
 
 
@@ -165,8 +182,28 @@ class VisitaListView(generic.ListView):
     """
     Generic class-based view for a list of Propietario.
     """
-    model = Visita
+    #model = Visita
+
+    cursor = connection.cursor()
+
+    context_object_name = 'visita_list'
+    template_name = 'dbconnection/visita_list.html'
     paginate_by = 100
+
+    def get_success_url(self):
+        return reverse('visitas')
+
+    def get_context_data(self, **kwargs):
+        #self.object_list = self.get_queryset()
+        context = super().get_context_data(**kwargs)
+        context['prueba'] = 3
+        return context
+
+    def get_queryset(self):
+        self.cursor.execute(
+        	"SELECT v.id,v.fecha,c.nombre FROM dbconnection_visita as v, dbconnection_comprador as c, dbconnection_propietario as p, dbconnection_intermediario as i  WHERE v.comprador_id=c.id or v.comprador_id=p.id or v.comprador_id=i.id")
+        tabla = dictfetchall(self.cursor)
+        return tabla
 
 
 class AdministraListView(generic.ListView):
@@ -176,12 +213,15 @@ class AdministraListView(generic.ListView):
     model = Administra
     paginate_by = 100
 
+
 class TweetListView(generic.ListView):
     """
     Generic class-based view for a list of Propietario.
     """
     model = Tweet
     paginate_by = 100
+
+
 
 
 class IntermediarioListView(generic.edit.FormMixin, generic.ListView):

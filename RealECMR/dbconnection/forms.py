@@ -1,7 +1,8 @@
 from django import forms
 from django.db import connection
 from .models import *
-from .utilities import dictfetchall
+from .views import *
+#from .utilities import dictfetchall
 
 class AgregarCampoForm(forms.Form):
     nombre = forms.CharField(max_length=50)
@@ -24,6 +25,17 @@ class AgregarCampoForm(forms.Form):
         cursor.execute("INSERT INTO dbconnection_camposadicionales VALUES (%s, %s, %s, %s)", [
                        id, data.get("nombre"), data.get("tipo"), tablaNum])
 
+class FilPropietarioForm(forms.Form):
+    nombre = forms.CharField(max_length=50, required=False)
+    edad = forms.IntegerField(widget=forms.TextInput, required=False, initial='0')
+    direccion = forms.CharField(max_length=50, required=False)
+
+    def filtrar(self):
+        data= self.cleaned_data
+        nombre = data.get("nombre")
+        edad = data.get("edad")
+        direccion = data.get("direccion")
+        return nombre,edad,direccion
 
 class PropiedadForm(forms.Form):
     propietario = forms.IntegerField(widget=forms.TextInput)
@@ -81,7 +93,6 @@ class CompradorForm(forms.Form):
     tipoPropiedad = forms.ChoiceField(
         choices=TIPOBIEN, label='Tipo de Propiedad')
     presupuesto = forms.FloatField(widget=forms.TextInput)
-
 
 class PropietarioForm(forms.Form):
     activo = forms.BooleanField(initial=True, required=False)
@@ -198,6 +209,4 @@ class IntermediarioForm(forms.Form):
     foto = forms.FileField(required=False)
     comision = forms.DecimalField(widget=forms.TextInput)
     experiencia = forms.IntegerField(widget=forms.TextInput)
-
-class FiltroCompradores(forms.Form):
-    nombre = forms.CharField(label='Nombre', max_length=100)
+    
