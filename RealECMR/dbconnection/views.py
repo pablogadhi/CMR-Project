@@ -8,7 +8,7 @@ from .dummy import generateDummy
 from django.urls import reverse
 from django.db import connection
 from django.forms import formset_factory, BaseFormSet
-from .utilities import dictfetchall
+from .utilities import *
 
 def index(request):
     num_propietarios = Propietario.objects.all().count()
@@ -30,6 +30,10 @@ def dummy(request):
     generateDummy()
     return HttpResponse("Dummy Generado!")
 
+def reset(request):
+    cursor = connection.cursor()
+    resetAllTables(cursor)
+    return HttpResponse("Tablas reseteadas!")
 
 class PropetarioListView(generic.edit.FormMixin, generic.ListView):
     """
@@ -83,23 +87,24 @@ class PropetarioListView(generic.edit.FormMixin, generic.ListView):
                 return self.form_invalid(form)
         elif 'updateFila' in request.POST:
             data = request.POST.copy()
-            self.cursor.execute("SELECT COUNT(*) FROM dbconnection_propietario")
-            size = dictfetchall(self.cursor)
+            self.cursor.execute("SELECT * FROM dbconnection_propietario ORDER BY id")
+            tabla = dictfetchall(self.cursor)
+            size = len(tabla)
             self.cursor.execute("SELECT * FROM dbconnection_camposadicionales as ca WHERE ca.tabla = 1")
             camposA = dictfetchall(self.cursor)
             valoresA = {}
             for c in camposA:
                 key = "ca" + str(c['id'])
                 valoresA[key] = data.get(key) 
-            data.update({'form-TOTAL_FORMS': size[0]['count'],
-                        'form-INITIAL_FORMS': size[0]['count'],
+            data.update({'form-TOTAL_FORMS': size,
+                        'form-INITIAL_FORMS': size,
                         'form-MAX_NUM_FORMS': ''})
             formset = self.UpdateFormset(data)
             count = 0
             form = None
             for f in formset:
                 if f.is_valid():
-                    f.actualizar(count, camposA, valoresA)
+                    f.actualizar(tabla[count]['id'], camposA, valoresA)
                     return self.form_valid(form)
                 else:
                     print(count)
@@ -108,17 +113,18 @@ class PropetarioListView(generic.edit.FormMixin, generic.ListView):
             return self.form_invalid(form)
         elif 'deleteFila' in request.POST:
             data = request.POST.copy()
-            self.cursor.execute("SELECT COUNT(*) FROM dbconnection_propietario")
-            size = dictfetchall(self.cursor)
-            data.update({'form-TOTAL_FORMS': size[0]['count'],
-                        'form-INITIAL_FORMS': size[0]['count'],
+            self.cursor.execute("SELECT *  FROM dbconnection_propietario ORDER BY id")
+            tabla = dictfetchall(self.cursor)
+            size = len(tabla)
+            data.update({'form-TOTAL_FORMS': size,
+                        'form-INITIAL_FORMS': size,
                         'form-MAX_NUM_FORMS': ''})
             formset = self.UpdateFormset(data)
             count = 0
             form = None
             for f in formset:
                 if f.is_valid():
-                    f.eliminar(count)
+                    f.eliminar(tabla[count]['id'])
                     return self.form_valid(form)
                 else:
                     print(count)
@@ -155,7 +161,7 @@ class PropetarioListView(generic.edit.FormMixin, generic.ListView):
                 except:
                     prop['ca'+str(self.campos_adicionales[i]['id'])] = None
 
-        AgregarFormSet = formset_factory(PropietarioForm, extra=len(tabla))
+        AgregarFormSet = formset_factory(PropietarioForm, extra=0)
         self.UpdateFormset = AgregarFormSet(initial=tabla)
 
         return tabla

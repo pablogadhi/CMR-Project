@@ -7,4 +7,4 @@ admin.site.register(Intermediario)
 admin.site.register(Comprador)
 admin.site.register(CamposAdicionales)
 admin.site.register(ValoresAdicionales)
-# Register your models here.
+admin.site.register(CantidadTuplas)

@@ -15,14 +15,13 @@ class AgregarCampoForm(forms.Form):
 
     def agregar(self, tablaNum):
         data = self.cleaned_data
-        id = CamposAdicionales.objects.count()
-        # if data.get("tabla") == "propiedad":
-        #     tablaNum = 0
-        # elif data.get("tabla") == "propietario":
-        #     tablaNum = 1
         cursor = connection.cursor()
-        cursor.execute("INSERT INTO dbconnection_camposadicionales VALUES (%s, %s, %s, %s)", [
-                       id, data.get("nombre"), data.get("tipo"), tablaNum])
+        cursor.execute("SELECT cantidad FROM dbconnection_cantidadtuplas WHERE nombre_tabla=%s", ['camposadicionales'])
+        id = dictfetchall(cursor)
+        id = id[0]['cantidad']
+        cursor.execute("INSERT INTO dbconnection_camposadicionales VALUES (%s, %s, %s, %s)",
+                        [id, data.get("nombre"), data.get("tipo"), tablaNum])
+        cursor.execute("UPDATE dbconnection_cantidadtuplas SET cantidad=%s WHERE nombre_tabla=%s", [id+1, 'camposadicionales'])
 
 
 class PropiedadForm(forms.Form):
@@ -40,14 +39,6 @@ class PropiedadForm(forms.Form):
     informacion = forms.CharField(max_length=500)
     foto = forms.FileField(required=False)
     tamano = forms.DecimalField(widget=forms.TextInput)
-
-    def agregar(self):
-        foto = None
-        data = self.cleaned_data
-        id = Propiedad.objects.count()
-        cursor = connection.cursor()
-        cursor.execute("INSERT INTO dbconnection_propiedad VALUES (%s, %s, %s, %s, %s, %s, %s)", [id, data.get(
-            "direccion"), data.get("valuacion"), data.get("tipo"), data.get("informacion"), foto, data.get("tamano")])
 
 
 class CompradorForm(forms.Form):
@@ -110,7 +101,9 @@ class PropietarioForm(forms.Form):
         data = self.cleaned_data
         cursor = connection.cursor()
 
-        id = Propietario.objects.count()
+        cursor.execute("SELECT cantidad FROM dbconnection_cantidadtuplas WHERE nombre_tabla='propietario'")
+        id = dictfetchall(cursor)
+        id = id[0]['cantidad']
         activo = str(data.get("activo"))
         nombre = data.get("nombre")
         sexo = data.get("sexo")
@@ -125,6 +118,8 @@ class PropietarioForm(forms.Form):
 
         cursor.execute("INSERT INTO dbconnection_propietario VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
                         [id, activo, nombre, sexo, edad, telefono, mail, cuenta, fechaInicio, reputacion, foto, direccion])
+        cursor.execute("UPDATE dbconnection_cantidadtuplas SET cantidad=%s WHERE nombre_tabla=%s", [id+1, 'propietario'])
+
         for campo in camposAdicionales:
             id_extra = ValoresAdicionales.objects.count()
             id_campo = campo.get("id")

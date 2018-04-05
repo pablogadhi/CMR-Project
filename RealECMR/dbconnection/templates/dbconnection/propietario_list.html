@@ -3,7 +3,7 @@
 
 {% block content %}
 
-{% with uFormSet=update_formset|makeArray vAdicionales=object_list|extraValues:campos_adicionales %}
+{% with uFormSet=update_formset|makeDict:object_list vAdicionales=object_list|extraValues:campos_adicionales %}
 <script type="text/javascript">
 
     $(document).on("click", ".updateB", function(){

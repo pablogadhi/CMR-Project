@@ -98,4 +98,7 @@ class ValoresAdicionales(models.Model):
     campo = models.ForeignKey(CamposAdicionales, on_delete=models.CASCADE)
     id_tupla = models.IntegerField(default=0)
     valor = models.CharField(max_length=35, default="")
-    
+
+class CantidadTuplas(models.Model):
+    nombre_tabla = models.CharField(max_length=25)
+    cantidad = models.IntegerField(default=0)
