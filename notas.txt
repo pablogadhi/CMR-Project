@@ -1,0 +1,1 @@
+SELECT id, ca0 FROM dbconnection_propietario as p LEFT OUTER JOIN (SELECT id_tupla, valor as ca0 FROM dbconnection_valoresadicionales WHERE campo_id=8) as v ON p.id=v.id_tupla;

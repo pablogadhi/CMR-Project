@@ -12,11 +12,14 @@ def arrayObject(array, index):
     return array[index]
 
 @register.filter
-def makeArray(formSet):
-    arr = []
+def makeDict(formSet, objectList):
+    dic = {}
+    counter = 0
     for form in formSet:
-        arr.append(form.as_p())
-    return arr
+        dicKey = objectList[counter]['id']
+        dic[dicKey] = form.as_p()
+        counter += 1
+    return dic
 
 @register.filter
 def extraValues(objectList, camposAdicionales):

@@ -1,79 +1,93 @@
 {% extends "base_generic.html" %}
+{% load dbfilters %}
 
 {% block content %}
-    <h1>Lista de Compradores</h1>
-    <form method="post">
+
+{% include "scripts_template.html" %}
+
+<h1>Lista de Compradores</h1>
+<form method="post">
     <label for"Activo"> Activo: </label> <input id="" type="checkbox" name="Activo" value="{{activo}}">
     <label for"Edad"> Edad: </label> <input type="number" name="Edad" value="{{edad}}">
     <label for"your_name"> Nombre: </label> <input id="your_name" type="text" name="your_name" value="{{nombre}}">
     <button type="submit" value="Filtrar">Filtrar</button>
-  </form>
-    <hr>
-    {% if comprador_list %}
-    <ul>
-      <table>
+</form>
+<hr>
+{% if object_list %}
+<ul>
+    <table>
         <tr>
-          <th>ID</th>
-          <th>Activo</th>
-          <th>Nombre</th>
-          <th>Sexo</th>
-          <th>Edad</th>
-          <th>Telefono</th>
-          <th>Correo</th>
-          <th>Twitter</th>
-          <th>FechaInicio</th>
-          <th>Reputacion</th>
-          <th>Busca cerca de</th>
-          <th>Busca</th>
-          <th>Presupuesto</th>
-          {% for i in campos_adicionales %}
-          <th>{{i.nombre}}</th>
-          {% endfor %}
-          <th>Foto</th>
+            <th>ID</th>
+            <th>Activo</th>
+            <th>Nombre</th>
+            <th>Sexo</th>
+            <th>Edad</th>
+            <th>Telefono</th>
+            <th>Correo</th>
+            <th>Twitter</th>
+            <th>FechaInicio</th>
+            <th>Reputacion</th>
+            <th>Busca cerca de</th>
+            <th>Busca</th>
+            <th>Presupuesto</th>
+            <th>Foto</th>
+            {% for i in campos_adicionales %}
+            <th>{{i.nombre}}</th>
+            {% endfor %}
         </tr>
-      {% for comprador in comprador_list %}
+        {% for comprador in object_list %}
         <tr>
-          <td>{{comprador.id}}</td>
-          <td>{{comprador.activo}}</td>
-          <td>{{comprador.nombre}}</td>
-          <td>{{comprador.sexo}}</td>
-          <td>{{comprador.edad}}</td>
-          <td>{{comprador.telefono}}</td>
-          <td>{{comprador.mail}}</td>
-          <td>{{comprador.cuenta}}</td>
-          <td>{{comprador.fechaInicio}}</td>
-          <td>{{comprador.reputacion}}</td>
-          <td>{{comprador.zona}}</td>
-          <td>{{comprador.tipoPropiedad}}</td>
-          <td>{{comprador.presupuesto}}</td>
-          
-          <td>{{comprador.foto}}</td>
+            <td>
+                <button type="button" class="btn btn-secondary updateB" data-toggle="modal" data-target="#updateModal">{{comprador.id}}</button>
+            </td>
+            <td>{{comprador.activo}}</td>
+            <td>{{comprador.nombre}}</td>
+            <td>{{comprador.sexo}}</td>
+            <td>{{comprador.edad}}</td>
+            <td>{{comprador.telefono}}</td>
+            <td>{{comprador.mail}}</td>
+            <td>{{comprador.cuenta}}</td>
+            <td>{{comprador.fechaInicio}}</td>
+            <td>{{comprador.reputacion}}</td>
+            <td>{{comprador.zona}}</td>
+            <td>{{comprador.tipoPropiedad}}</td>
+            <td>{{comprador.presupuesto}}</td>
+            <td>{{comprador.foto}}</td>
+            {% for campo in campos_adicionales %}
+            <td>{{comprador|extraKeyValue:campo.id}}</td>
+            {% endfor %}
         </tr>
-      {% endfor %}
-      </table>
-    </ul>
-    {% else %}
-      <p>No hay compradores registrados.</p>
-    {% endif %}       
+        {% endfor %}
+    </table>
+</ul>
+{% else %}
+<p>No hay compradores registrados.</p>
+{% endif %}
 {% endblock %}
 
 {% block addform %}
-  <form method="post">
-      {% csrf_token %} 
-      {{ form.as_p }}
-      <input type="submit" value="Agregar" class="btn btn-primary" style="float:right"/>
-  </form>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input name="addCampo" type="submit" value="Agregar" class="btn btn-primary" style="float:right"/>
+</form>
 {% endblock %}
 
 {% block addFilaForm %}
-  <form method="post">
-      {% csrf_token %} 
-      {{ second_form.as_p }}
-      {% for extra in campos_adicionales %}
-      <label for="{{extra.nombre}}">{{extra.nombre}}: </label>
-      <input id="{{extra.nombre}}" type="text" name="{extra.nombre}}">
-      <p></p>
-      {% endfor %}
-      <input name='addFila' type="submit" value="Agregar" class="btn btn-primary" style="float:right"/>
-  </form>
+<form method="post">
+    {% csrf_token %}
+    {{ second_form.as_p }}
+    {% for extra in campos_adicionales %}
+    <label for="{{extra.nombre}}">{{extra.nombre}}: </label>
+    <input id="{{extra.nombre}}" type="text" name="ca{{extra.id}}">
+    <p></p>
+    {% endfor %}
+    <input name='addFila' type="submit" value="Agregar" class="btn btn-primary" style="float:right"/>
+</form>
 {% endblock %}
+
+{% block updateFilaForm %}
+<form method="post" id="uForm">
+</form>
+{% endblock %}
+

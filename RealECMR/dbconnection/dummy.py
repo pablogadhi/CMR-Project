@@ -1,72 +1,92 @@
 from .models import *
 import random
 from django.db import models
+import factory
 
+def randomSex():
+    sexos = ['Femenino', 'Masculino']
+    return random.choice(sexos)
+
+def genUserName(string):
+    uname = string.replace(" ", "")
+    return uname.lower()
+
+def randomReputacion():
+    reputaciones = ['Buena', 'Normal', 'Mala']
+    return random.choice(reputaciones)
+
+def randomAge():
+    return random.randint(18, 99)
+
+def randomPhone():
+    return random.randint(10000000, 99999999)
+
+def randomZona():
+    return random.randint(1, 25)
+
+def randomTipoBien():
+    tipos = ['Apartamento', 'Casa', 'Terreno', 'Otro']
+    return random.choice(tipos)
+
+def randomPercentage():
+    return random.uniform(0.00, 100.00)
+
+def randomExp():
+    return random.randint(0, 60)
+
+class PropietarioFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Propietario
+    id = factory.Sequence(lambda n: '%i' % n) 
+    activo = True
+    nombre = factory.Faker('name', 'es_MX')
+    sexo = factory.LazyFunction(randomSex)
+    edad = factory.LazyFunction(randomAge)
+    telefono = factory.LazyFunction(randomPhone)
+    mail = factory.LazyAttribute(lambda obj: '%s@mail.com' % genUserName(obj.nombre))
+    cuenta = None
+    fechainicio = factory.Faker('date_this_decade')
+    reputacion = factory.LazyFunction(randomReputacion)
+    foto = None
+    direccion = factory.Faker('address', 'es_MX')
+
+class CompradorFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Comprador
+    id = factory.Sequence(lambda n: '%i' % n) 
+    activo = True
+    nombre = factory.Faker('name', 'es_MX')
+    sexo = factory.LazyFunction(randomSex)
+    edad = factory.LazyFunction(randomAge)
+    telefono = factory.LazyFunction(randomPhone)
+    mail = factory.LazyAttribute(lambda obj: '%s@mail.com' % genUserName(obj.nombre))
+    cuenta = None
+    fechainicio = factory.Faker('date_this_decade')
+    reputacion = factory.LazyFunction(randomReputacion)
+    foto = None
+    zona = factory.LazyFunction(randomZona)
+    tipopropiedad = factory.LazyFunction(randomTipoBien)
+    presupuesto = factory.Faker('pyfloat')
+
+class IntermediarioFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Intermediario
+
+    id = factory.Sequence(lambda n: '%i' % n) 
+    activo = True
+    nombre = factory.Faker('name', 'es_MX')
+    sexo = factory.LazyFunction(randomSex)
+    edad = factory.LazyFunction(randomAge)
+    telefono = factory.LazyFunction(randomPhone)
+    mail = factory.LazyAttribute(lambda obj: '%s@mail.com' % genUserName(obj.nombre))
+    cuenta = None
+    fechainicio = factory.Faker('date_this_decade')
+    reputacion = factory.LazyFunction(randomReputacion)
+    foto = None
+    comision = factory.LazyFunction(randomPercentage)
+    experiencia = factory.LazyFunction(randomExp)
 
 def generateDummy():
-
-    Propiedad.objects.all().delete() 
-    Propietario.objects.all().delete() 
-    Comprador.objects.all().delete() 
-    Intermediario.objects.all().delete() 
-
-    nombres = ['Carlos', 'Juan', 'Maria', 'Pedro', 'Gonzalo',
-               'Luisa', 'Sofia', 'Fernanda', 'Migue', 'Gabriela']
-    apellidos = ['Rodriguez', 'Sanchez', 'Gutierrez', 'Lopez',
-                 'Fernandez', 'Juarez', 'Perez', 'Maldonado', 'Ramos']
-    sexos = ['femenino', 'masculino', 'otro']
-    estado = [True, False]
-    domains = ['@gmail.com', '@hotmail.com', '@yahoo.com']
-    tipos = ['casa', 'apartamento', 'oficina', 'bodega', 'terreno']
-
-    propiedades = []
-
-    for i in range(100):
-        propiedad = Propiedad(direccion="direccion",
-                              valuacion=random.uniform(0, 80000),
-                              tipo=random.choice(tipos),
-                              tamano=random.uniform(100, 100000)
-                              )
-        propiedad.save()
-        propiedades.append(propiedad.id)
-
-    for i in range(100):
-        nombreE = random.choice(nombres)
-        apellidoE = random.choice(apellidos)
-        propietario = Propietario(nombre=nombreE + " " + apellidoE,
-                                  edad=random.randint(20, 80),
-                                  telefono=random.randint(10000000, 99999999),
-                                  sexo=random.choice(sexos),
-                                  rol="propietario",
-                                  activo=random.choice(estado),
-                                  mail=nombreE.lower()+apellidoE.lower()+random.choice(domains),
-                                  )
-
-        propietario.bienPoseido_id=random.choice(propiedades)
-        propietario.save()
-
-    for i in range(100):
-        nombreE = random.choice(nombres)
-        apellidoE = random.choice(apellidos)
-        comprador = Comprador(nombre=nombreE + " " + apellidoE,
-                              edad=random.randint(20, 80),
-                              telefono=random.randint(10000000, 99999999),
-                              sexo=random.choice(sexos),
-                              rol="comprador",
-                              activo=random.choice(estado),
-                              mail=nombreE.lower()+apellidoE.lower()+random.choice(domains),
-                              zona=random.randint(1, 25),
-                              tipoPropiedad=random.choice(tipos),
-                              presupuesto=random.uniform(0, 8000)
-                              )
-        comprador.save()
-
-    for i in range(100):
-        nombreE = random.choice(nombres)
-        apellidoE = random.choice(apellidos)
-        inter = Intermediario(nombre=nombreE + " " + apellidoE,
-                              comision=random.random(),
-                              experiencia=random.randint(0, 40)
-
-                              )
-        inter.save()
+    PropietarioFactory.create_batch(100)
+    CompradorFactory.create_batch(100)
+    IntermediarioFactory.create_batch(100)
