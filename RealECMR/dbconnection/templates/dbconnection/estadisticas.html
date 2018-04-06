@@ -2,11 +2,18 @@
 {% load chartit %}
 
 {% block content %}
-{{chart_list|load_charts:"chart_1, chart_2"}}
+{{chart_list|load_charts:"chart_1, chart_2, chart_3"}}
+<h1>Estadísticas</h1>
+<hr>
 <div id='chart_1'>
     Chart Render
 </div>
+<hr>
 <div id='chart_2'>
+    Chart Render
+</div>
+<hr>
+<div id='chart_3'>
     Chart Render
 </div>
 {% endblock %}

@@ -74,7 +74,7 @@
                             <a href="{% url 'estadisticas' %}">Mostrar Estadisticas</a>
                         </li>
                         <li>
-                            <a href="{% url 'posee' %}">Mostrar posesiones</a>
+                            <a href="{% url 'posee' %}">Mostrar Posesiones</a>
                         </li>
                         <li>
                             <a href="{% url 'administraciones' %}">Administracion</a>
@@ -95,7 +95,7 @@
 
                     <p></p>
 
-                    {% if request.path != "/dbconnection/" and request.path != "/dbconnection/visitas/" and request.path != "/dbconnection/administracion/" and request.path != "/dbconnection/contratos/" and request.path != "/dbconnection/posee/" and request.path != "/dbconnection/historial/"%}
+                    {% if request.path != "/dbconnection/" and request.path != "/dbconnection/visitas/" and request.path != "/dbconnection/administracion/" and request.path != "/dbconnection/contratos/" and request.path != "/dbconnection/posee/" and request.path != "/dbconnection/historial/" and request.path != "/dbconnection/estadisticas/"%}
 
                     <!-- Button trigger modal -->
                     <button id="addFilaB" type="button" class="btn btn-primary" data-toggle="modal" data-target="#filaAModal">

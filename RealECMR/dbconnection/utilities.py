@@ -8,12 +8,12 @@ def dictfetchall(cursor):
     ]
 
 def resetAllTables(cursor):
+    cursor.execute("DELETE FROM dbconnection_visita")
+    cursor.execute("DELETE FROM dbconnection_administra")
     cursor.execute("DELETE FROM dbconnection_propiedad")
     cursor.execute("DELETE FROM dbconnection_propietario")
     cursor.execute("DELETE FROM dbconnection_comprador")
     cursor.execute("DELETE FROM dbconnection_intermediario")
-    cursor.execute("DELETE FROM dbconnection_visita")
-    cursor.execute("DELETE FROM dbconnection_administra")
     cursor.execute("DELETE FROM dbconnection_valoresadicionales")
     cursor.execute("DELETE FROM dbconnection_camposadicionales")
     cursor.execute("DELETE FROM dbconnection_cantidadtuplas")

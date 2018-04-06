@@ -11,7 +11,16 @@ def randomSex():
 
 def genUserName(string):
     uname = string.replace(" ", "")
-    return uname.lower()
+    uname = uname.lower()
+    uname = uname.replace("á", "a")
+    uname = uname.replace("é", "e")
+    uname = uname.replace("í", "i")
+    uname = uname.replace("ó", "o")
+    uname = uname.replace("ú", "ú")
+    uname = uname.replace("ñ", "n")
+    uname = uname.replace("(", "")
+    uname = uname.replace(")", "")
+    return uname
 
 def randomReputacion():
     reputaciones = ['Buena', 'Normal', 'Mala']

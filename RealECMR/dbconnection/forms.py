@@ -108,6 +108,10 @@ class PropiedadForm(forms.ModelForm):
                 'foto': forms.FileInput(attrs={'required': False}),
                 'tamano': forms.TextInput()
                 }
+        labels = {
+            'tamano': 'Tamaño (metros cuatrados)',
+            'valuacion': 'Valuacion (Q)'
+        }
         
 
     def agregar(self, camposAdicionales, valoresAdicionales):
@@ -197,7 +201,15 @@ class CompradorForm(forms.ModelForm):
                 'edad': forms.TextInput(),
                 'telefono': forms.TextInput(),
                 'fechainicio': forms.SelectDateWidget(),
-                'foto': forms.FileInput(attrs={'required': False}),}
+                'foto': forms.FileInput(attrs={'required': False}),
+                'zona': forms.TextInput(),
+                'presupuesto': forms.TextInput()
+                }
+        labels = {
+                'fechainicio': 'Fecha de Inicio',
+                'tipopropiedad': 'Tipo de Propiedad',
+                'presupuesto': 'Presupuesto (Q)'
+                }
 
     def agregar(self, camposAdicionales, valoresAdicionales):
         data = self.cleaned_data
@@ -292,6 +304,9 @@ class PropietarioForm(forms.ModelForm):
                 'telefono': forms.TextInput(),
                 'fechainicio': forms.SelectDateWidget(),
                 'foto': forms.FileInput(attrs={'required':False}),
+                }
+        labels = {
+                'fechainicio': 'Fecha de Inicio'
                 }
 
     def agregar(self, camposAdicionales, valoresAdicionales):
@@ -391,6 +406,12 @@ class IntermediarioForm(forms.ModelForm):
                 'telefono': forms.TextInput(),
                 'fechainicio': forms.SelectDateWidget(),
                 'foto': forms.FileInput(attrs={'required':False}),
+                'comision': forms.TextInput(),
+                }
+        labels = {
+                'fechainicio': 'Fecha de Inicio',
+                'comision': 'Comision (Q)',
+                'experiencia': 'Experiencia (Años)'
                 }
 
     def agregar(self, camposAdicionales, valoresAdicionales):

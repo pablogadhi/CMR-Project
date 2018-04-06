@@ -9,7 +9,7 @@ from django.urls import reverse
 from django.db import connection
 from django.forms import formset_factory, BaseFormSet
 from .utilities import *
-from chartit import PivotDataPool, PivotChart
+from chartit import PivotDataPool, PivotChart, DataPool, Chart
 from django.db.models import Avg, Count
 
 ele_propietario= ['%%',0,'%%']
@@ -755,9 +755,20 @@ def ChartsView(request):
                     'categories':['reputacion'],
                     },
                 'terms': {
-                    'count_reputacion': Count('reputacion',)
+                    'count_reputacion': Count('reputacion')
                     }
 
+                }]
+            )
+    data3 = PivotDataPool(
+            series=[{
+                'options': {
+                    'source': Visita,
+                    'categories':['fecha']
+                    },
+                'terms': {
+                    'count_comprador': Count('comprador_id')
+                    }
                 }]
             )
 
@@ -812,5 +823,30 @@ def ChartsView(request):
                     }
                 }
             )
+    chart_3 = PivotChart(
+            datasource = data3,
+            series_options=[{
+                'options':{
+                    'type': 'line',
+                    },
+                'terms':['count_comprador']
+                }],
+            chart_options={
+                'title': {
+                    'text': 'Cantidad de Compradores por Fecha' 
+                    },
+                'xAxis': {
+                    'title': {
+                        'text': 'Fecha'
+                        }
+                    },
+                'yAxis': {
+                    'title': {
+                        'text': 'Cantidad'
+                        }
+                    }
+                }
 
-    return render(request, 'dbconnection/estadisticas.html', context={'chart_list':[chart_1, chart_2]})
+            )
+
+    return render(request, 'dbconnection/estadisticas.html', context={'chart_list':[chart_1, chart_2, chart_3]})
