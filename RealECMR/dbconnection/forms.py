@@ -342,9 +342,9 @@ class PropietarioForm(forms.ModelForm):
         fechaInicio = data.get("fechainicio")
         reputacion = 'Normal'
         foto = (data.get('foto'))
-        foto = (foto.file).getvalue()
-        foto = base64.b64encode(foto)
-        print(foto)
+        foto = str((foto.file).getvalue())
+        # foto = str(base64.b64encode(foto))
+        # print(foto)
         direccion = data.get("direccion")
 
         cursor.execute("UPDATE dbconnection_propietario SET id=%s, activo=%s, nombre=%s, sexo=%s, edad=%s, telefono=%s, mail=%s, cuenta=%s, fechainicio=%s, reputacion=%s, foto=%s, direccion=%s WHERE id=%s",
@@ -368,7 +368,8 @@ class PropietarioForm(forms.ModelForm):
 
     def eliminar(self, idTupla):
         cursor = connection.cursor()
-        cursor.execute("DELETE FROM dbconnection_intermediario WHERE id=%s", [idTupla])
+        cursor.execute("DELETE FROM dbconnection_propiedad WHERE propietario_id=%s", [idTupla])
+        cursor.execute("DELETE FROM dbconnection_propietario WHERE id=%s", [idTupla])
         cursor.execute("DELETE FROM dbconnection_valoresadicionales WHERE id=%s", [idTupla])
 
             
@@ -460,6 +461,7 @@ class IntermediarioForm(forms.ModelForm):
 
     def eliminar(self, idTupla):
         cursor = connection.cursor()
+        cursor.execute("DELETE FROM dbconnection_propiedad WHERE intermediario_id=%s", [idTupla])
         cursor.execute("DELETE FROM dbconnection_intermediario WHERE id=%s", [idTupla])
         cursor.execute("DELETE FROM dbconnection_valoresadicionales WHERE id=%s", [idTupla])
 

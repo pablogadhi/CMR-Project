@@ -1,2 +1,10 @@
 {% extends "base_generic.html" %}
+{% load chartit %}
+
+{% block content %}
+{{chart1|load_charts:"chartContainer"}}
+<div id='chartContainer'>
+    Chart Render
+</div>
+{% endblock %}
 

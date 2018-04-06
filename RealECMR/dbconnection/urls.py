@@ -18,5 +18,6 @@ urlpatterns = [
 
     path('propiedad/<int:pk>', views.PropiedadDetailView.as_view(), name='propiedad-detail'),
     path('dummy/', views.dummy, name='dummy'),
-    path('reset/', views.reset, name='reset')
+    path('reset/', views.reset, name='reset'),
+    path('estadisticas/', views.ChartsView, name='estadisticas')
 ]

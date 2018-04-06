@@ -1,4 +1,6 @@
 from django import template
+from io import BytesIO
+import base64
 
 register = template.Library()
 
@@ -37,9 +39,11 @@ def extraValues(objectList, camposAdicionales):
 
 @register.filter
 def genImage(imageData):
-    data_uri = imageData.replace('\n', '')
-    img_tag = '<img src="data:image/png;base64,{0}"/>'.format(data_uri)
-    return img_tag
+    bdata = bytes(imageData, 'utf-8')
+    print(base64.b64encode(bdata))
+    # data_uri = imageData.replace('\n', '')
+    # img_tag = '<img src="data:image/png;base64,{0}"/>'.format(data_uri)
+    # return img_tag
 
 @register.filter
 def getName(objectList, objectID):
