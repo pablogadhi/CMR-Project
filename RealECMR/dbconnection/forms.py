@@ -27,6 +27,77 @@ class AgregarCampoForm(forms.Form):
         cursor.execute("UPDATE dbconnection_cantidadtuplas SET cantidad=%s WHERE nombre_tabla=%s", [
                        id+1, 'camposadicionales'])
 
+class FilPropietarioForm(forms.Form):
+    nombre = forms.CharField(max_length=50, required=False)
+    edad = forms.IntegerField(widget=forms.TextInput, required=False, initial='0')
+    direccion = forms.CharField(max_length=50, required=False)
+
+    def filtrar(self):
+        data= self.cleaned_data
+        nombre = data.get('nombre')
+        edad = data.get('edad')
+        direccion = data.get('direccion')
+        return nombre,edad,direccion
+
+class FilCompradorForm(forms.Form):
+    TIPOREP = (
+        ('',''),
+        ('Buena','Buena'),
+        ('Normal','Normal'),
+        ('Mala','Mala'),
+    )
+    reputacion = forms.ChoiceField(choices=TIPOREP, required=False)
+    presupuesto = forms.FloatField(widget=forms.TextInput, required=False, initial='0')
+    TIPOBIEN = (
+        ('',''),
+        ('Apartamento','Apartamento'),
+        ('Casa','Casa'),
+        ('Terreno','Terreno'),
+        ('Otro','Otro')
+    )
+    busca = forms.ChoiceField(choices=TIPOBIEN, required=False)
+
+    def filtrar(self):
+        data= self.cleaned_data
+        nombre = data.get('reputacion')
+        edad = data.get('presupuesto')
+        direccion = data.get('busca')
+        return nombre,edad,direccion
+
+class FilIntermediariosForm(forms.Form):
+    TIPOSEXO = (
+        ('',''),
+        ('Femenino','Femenino'),
+        ('Masculino','Masculino'),
+    )
+    sexo = forms.ChoiceField(choices=TIPOSEXO, required=False)
+    comision = forms.FloatField(widget=forms.TextInput, required=False, initial='0')
+    experiencia = forms.IntegerField(required=False, initial='0')
+    def filtrar(self):
+        data= self.cleaned_data
+        sexo = data.get('sexo')
+        comision = data.get('comision')
+        experiencia = data.get('experiencia')
+        return sexo,comision,experiencia
+
+class FilPropiedadForm(forms.Form):
+    direccion = forms.CharField(max_length=50, required=False)
+    valuacion = forms.FloatField(widget=forms.TextInput, required=False, initial='0')
+    TIPOBIEN = (
+        ('',''),
+        ('Apartamento','Apartamento'),
+        ('Casa','Casa'),
+        ('Terreno','Terreno'),
+        ('Otro','Otro')
+    )
+    tipo = forms.ChoiceField(choices=TIPOBIEN, required=False)
+
+    def filtrar(self):
+        data= self.cleaned_data
+        direccion = data.get('direccion')
+        valuacion = data.get('valuacion')
+        tipo = data.get('tipo')
+        return direccion,valuacion,tipo
 
 class PropiedadForm(forms.ModelForm):
     class Meta:
@@ -37,6 +108,7 @@ class PropiedadForm(forms.ModelForm):
                 'foto': forms.FileInput(attrs={'required': False}),
                 'tamano': forms.TextInput()
                 }
+        
 
     def agregar(self, camposAdicionales, valoresAdicionales):
         data = self.cleaned_data

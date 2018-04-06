@@ -10,6 +10,12 @@ from django.db import connection
 from django.forms import formset_factory, BaseFormSet
 from .utilities import *
 
+ele_propietario= ['%%',0,'%%']
+ele_comprador= ['%%',0,'%%']
+ele_propiedad= ['%%',0,'%%']
+ele_intermediario=['%%',0,0]
+
+
 def index(request):
     num_propietarios = Propietario.objects.all().count()
     num_compradores = Comprador.objects.all().count()
@@ -44,9 +50,10 @@ class PropietarioListView(generic.edit.FormMixin, generic.ListView):
     # paginate_by = 100
     form_class = AgregarCampoForm
     second_form_class = PropietarioForm
+    third_form_class = FilPropietarioForm
 
     def __init__(self):
-        self.cursor.execute("SELECT * FROM dbconnection_propietario ORDER BY id")
+        self.cursor.execute("SELECT * FROM dbconnection_propietario WHERE nombre LIKE %s AND edad>%s AND direccion LIKE %s ORDER BY id",['%'+ele_propietario[0]+'%',ele_propietario[1],'%'+ele_propietario[2]+'%'])
         self.tabla = dictfetchall(self.cursor)
         self.cursor.execute(
             "SELECT * FROM dbconnection_camposadicionales as ca WHERE ca.tabla = 1")
@@ -70,11 +77,12 @@ class PropietarioListView(generic.edit.FormMixin, generic.ListView):
         return reverse('propietarios')
 
     def get_context_data(self, **kwargs):
-        self.object_list = self.get_queryset()
+        #self.object_list = self.get_queryset()
         context = super().get_context_data(**kwargs)
         context['campos_adicionales'] = self.campos_adicionales
         context['form'] = self.get_form()
         context['second_form'] = self.get_form(self.get_second_form_class())
+        context['third_form'] = self.get_form(self.get_third_form_class())
         context['update_formset'] = self.UpdateFormset
         return context
 
@@ -135,6 +143,16 @@ class PropietarioListView(generic.edit.FormMixin, generic.ListView):
                     print(f.errors)
                 count += 1
             return self.form_invalid(form)
+        elif 'filtrar' in request.POST:
+            form = self.get_form(self.get_third_form_class())
+            if form.is_valid():
+                elementos=form.filtrar()
+                ele_propietario[0]=elementos[0]
+                ele_propietario[1]=elementos[1]
+                ele_propietario[2]=elementos[2]
+                return self.form_valid(form)
+            else:
+                return self.form_invalid(form)
 
     def form_valid(self, form):
         return super().form_valid(form)
@@ -145,6 +163,9 @@ class PropietarioListView(generic.edit.FormMixin, generic.ListView):
 
     def get_second_form_class(self):
         return self.second_form_class
+
+    def get_third_form_class(self):
+        return self.third_form_class
 
     def get_queryset(self):
         return self.tabla
@@ -158,9 +179,10 @@ class CompradorListView(generic.edit.FormMixin, generic.ListView):
     # paginate_by = 1000
     form_class = AgregarCampoForm
     second_form_class = CompradorForm
+    third_form_class = FilCompradorForm
 
     def __init__(self):
-        self.cursor.execute("SELECT * FROM dbconnection_comprador ORDER BY id")
+        self.cursor.execute("SELECT * FROM dbconnection_comprador WHERE reputacion like %s and presupuesto>%s and tipopropiedad like %s  ORDER BY id",['%'+ele_comprador[0]+'%',ele_comprador[1],'%'+ele_comprador[2]+'%'])
         self.tabla = dictfetchall(self.cursor)
         self.cursor.execute(
             "SELECT * FROM dbconnection_camposadicionales as ca WHERE ca.tabla = 2")
@@ -189,6 +211,7 @@ class CompradorListView(generic.edit.FormMixin, generic.ListView):
         context['campos_adicionales'] = self.campos_adicionales
         context['form'] = self.get_form()
         context['second_form'] = self.get_form(self.get_second_form_class())
+        context['third_form'] = self.get_form(self.get_third_form_class())
         context['update_formset'] = self.UpdateFormset
         return context
 
@@ -249,6 +272,16 @@ class CompradorListView(generic.edit.FormMixin, generic.ListView):
                     print(f.errors)
                 count += 1
             return self.form_invalid(form)
+        elif 'filtrar' in request.POST:
+            form = self.get_form(self.get_third_form_class())
+            if form.is_valid():
+                elementos=form.filtrar()
+                ele_comprador[0]=elementos[0]
+                ele_comprador[1]=elementos[1]
+                ele_comprador[2]=elementos[2]
+                return self.form_valid(form)
+            else:
+                return self.form_invalid(form)
 
     def form_valid(self, form):
         return super().form_valid(form)
@@ -259,6 +292,9 @@ class CompradorListView(generic.edit.FormMixin, generic.ListView):
 
     def get_second_form_class(self):
         return self.second_form_class
+
+    def get_third_form_class(self):
+        return self.third_form_class
 
     def get_queryset(self):
         return self.tabla
@@ -273,9 +309,10 @@ class IntermediarioListView(generic.edit.FormMixin, generic.ListView):
     # paginate_by = 100
     form_class = AgregarCampoForm
     second_form_class = IntermediarioForm
+    third_form_class = FilIntermediariosForm
 
     def __init__(self):
-        self.cursor.execute("SELECT * FROM dbconnection_intermediario ORDER BY id")
+        self.cursor.execute("SELECT * FROM dbconnection_intermediario WHERE sexo LIKE %s and comision>%s and experiencia>%s ORDER BY id",['%'+ele_intermediario[0]+'%',ele_intermediario[1],ele_intermediario[2]])
         self.tabla = dictfetchall(self.cursor)
         self.cursor.execute(
             "SELECT * FROM dbconnection_camposadicionales as ca WHERE ca.tabla = 3")
@@ -304,6 +341,7 @@ class IntermediarioListView(generic.edit.FormMixin, generic.ListView):
         context['campos_adicionales'] = self.campos_adicionales
         context['form'] = self.get_form()
         context['second_form'] = self.get_form(self.get_second_form_class())
+        context['third_form'] = self.get_form(self.get_third_form_class())
         context['update_formset'] = self.UpdateFormset
         return context
 
@@ -364,6 +402,16 @@ class IntermediarioListView(generic.edit.FormMixin, generic.ListView):
                     print(f.errors)
                 count += 1
             return self.form_invalid(form)
+        elif 'filtrar' in request.POST:
+            form = self.get_form(self.get_third_form_class())
+            if form.is_valid():
+                elementos=form.filtrar()
+                ele_intermediario[0]=elementos[0]
+                ele_intermediario[1]=elementos[1]
+                ele_intermediario[2]=elementos[2]
+                return self.form_valid(form)
+            else:
+                return self.form_invalid(form)
 
     def form_valid(self, form):
         return super().form_valid(form)
@@ -374,6 +422,9 @@ class IntermediarioListView(generic.edit.FormMixin, generic.ListView):
 
     def get_second_form_class(self):
         return self.second_form_class
+
+    def get_third_form_class(self):
+        return self.third_form_class
 
     def get_queryset(self):
         return self.tabla
@@ -387,9 +438,10 @@ class PropiedadListView(generic.edit.FormMixin, generic.ListView):
     # paginate_by = 100
     form_class = AgregarCampoForm
     second_form_class = PropiedadForm
+    third_form_class = FilPropiedadForm
 
     def __init__(self):
-        self.cursor.execute("SELECT * FROM dbconnection_propiedad ORDER BY id")
+        self.cursor.execute("SELECT * FROM dbconnection_propiedad WHERE direccion LIKE %s AND valuacion>%s AND tipo lIKE %s ORDER BY id",['%'+ele_propiedad[0]+'%',ele_propiedad[1],'%'+ele_propiedad[2]+'%'])
         self.tabla = dictfetchall(self.cursor)
         self.cursor.execute(
             "SELECT * FROM dbconnection_camposadicionales as ca WHERE ca.tabla = 0")
@@ -421,6 +473,11 @@ class PropiedadListView(generic.edit.FormMixin, generic.ListView):
         context['campos_adicionales'] = self.campos_adicionales
         context['form'] = self.get_form()
         context['second_form'] = self.get_form(self.get_second_form_class())
+        context['third_form'] = self.get_form(self.get_third_form_class())
+        self.cursor.execute("SELECT * FROM dbconnection_intermediario")
+        context['intermediarios_list'] = dictfetchall(self.cursor)
+        self.cursor.execute("SELECT * FROM dbconnection_propietario")
+        context['propietarios_list'] = dictfetchall(self.cursor)
         context['update_formset'] = self.UpdateFormset
         return context
 
@@ -481,6 +538,17 @@ class PropiedadListView(generic.edit.FormMixin, generic.ListView):
                     print(f.errors)
                 count += 1
             return self.form_invalid(form)
+        elif 'filtrar' in request.POST:
+            form = self.get_form(self.get_third_form_class())
+            if form.is_valid():
+                form.filtrar()
+                elementos=form.filtrar()
+                ele_propiedad[0]=elementos[0]
+                ele_propiedad[1]=elementos[1]
+                ele_propiedad[2]=elementos[2]
+                return self.form_valid(form)
+            else:
+                return self.form_invalid(form)
 
     def form_valid(self, form):
         return super().form_valid(form)
@@ -491,6 +559,9 @@ class PropiedadListView(generic.edit.FormMixin, generic.ListView):
 
     def get_second_form_class(self):
         return self.second_form_class
+
+    def get_third_form_class(self):
+        return self.third_form_class
 
     def get_queryset(self):
         return self.tabla

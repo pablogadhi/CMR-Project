@@ -27,6 +27,9 @@ class Cliente(models.Model):
 
     def get_absolute_url(self):
         return reverse('detalle-cliente',args=[str(self.id)])
+
+    def __str__(self):
+       return str(self.nombre)
     
     class Meta:
         abstract = True
@@ -75,6 +78,7 @@ class Visita(models.Model):
     propiedad = models.ForeignKey('Propiedad', on_delete=models.CASCADE, default=0)
     intermediario = models.ForeignKey('Intermediario', on_delete=models.CASCADE, default=0)
     fecha = models.DateField(null=True)
+
 
 class Tweet(models.Model):
     id = models.AutoField(primary_key=True)

@@ -76,6 +76,14 @@
 </form>
 {% endblock %}
 
+{% block filtrarForm %}
+<form method="post"> 
+    {% csrf_token %}
+    {{ third_form.as_p }}
+    <input name="filtrar" type="submit" value="Filtrar" class="btn btn-primary">
+ </form>
+{% endblock %}
+
 {% block updateFilaForm %}
 <form enctype="multipart/form-data" method="post" id="uForm">
 </form>
