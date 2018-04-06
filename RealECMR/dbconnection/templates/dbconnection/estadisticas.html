@@ -2,8 +2,11 @@
 {% load chartit %}
 
 {% block content %}
-{{chart1|load_charts:"chartContainer"}}
-<div id='chartContainer'>
+{{chart_list|load_charts:"chart_1, chart_2"}}
+<div id='chart_1'>
+    Chart Render
+</div>
+<div id='chart_2'>
     Chart Render
 </div>
 {% endblock %}

@@ -36,6 +36,12 @@ def randomPercentage():
 def randomExp():
     return random.randint(0, 60)
 
+def randomPresupuesto():
+    return random.uniform(0.00, 999999.99)
+
+def randomSize():
+    return random.uniform(1000.00, 9999.99)
+
 class PropietarioFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Propietario
@@ -68,7 +74,7 @@ class CompradorFactory(factory.django.DjangoModelFactory):
     foto = None
     zona = factory.LazyFunction(randomZona)
     tipopropiedad = factory.LazyFunction(randomTipoBien)
-    presupuesto = factory.Faker('pyfloat')
+    presupuesto = factory.LazyFunction(randomPresupuesto)
 
 class IntermediarioFactory(factory.django.DjangoModelFactory):
     class Meta:
@@ -95,21 +101,40 @@ class PropiedadFactory(factory.django.DjangoModelFactory):
     propietario = factory.Iterator(Propietario.objects.all())
     intermediario = factory.Iterator(Intermediario.objects.all())
     direccion = factory.Faker('address', 'es_MX')
-    valuacion = factory.Faker('pyfloat')
+    valuacion = factory.LazyFunction(randomPresupuesto)
     tipo = factory.LazyFunction(randomTipoBien)
     informacion = factory.Faker('paragraph', 'es_MX')
     foto = None
-    tamano = factory.Faker('pyfloat')
+    tamano = factory.LazyFunction(randomSize)
+
+class VisitaFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Visita
+    id = factory.Sequence(lambda n: '%i' % n) 
+    comprador = factory.Iterator(Comprador.objects.all())
+    propiedad = factory.Iterator(Propiedad.objects.all())
+    fecha = factory.Faker('date_this_decade')
+
+class AdministraFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Administra
+    propietario = factory.Iterator(Propietario.objects.all())
+    propiedad = factory.Iterator(Propiedad.objects.all())
+    fecha = factory.Faker('date_this_decade')
 
 def generateDummy():
     cursor = connection.cursor()
     resetAllTables(cursor)
-    PropietarioFactory.create_batch(10)
-    CompradorFactory.create_batch(10)
-    IntermediarioFactory.create_batch(10)
-    PropiedadFactory.create_batch(10)
-    cursor.execute("UPDATE dbconnection_cantidadtuplas SET cantidad=10 WHERE nombre_tabla='propietario'")
-    cursor.execute("UPDATE dbconnection_cantidadtuplas SET cantidad=10 WHERE nombre_tabla='comprador'")
-    cursor.execute("UPDATE dbconnection_cantidadtuplas SET cantidad=10 WHERE nombre_tabla='intermediario'")
-    cursor.execute("UPDATE dbconnection_cantidadtuplas SET cantidad=10 WHERE nombre_tabla='propiedad'")
+    PropietarioFactory.create_batch(40)
+    CompradorFactory.create_batch(40)
+    IntermediarioFactory.create_batch(40)
+    PropiedadFactory.create_batch(40)
+    VisitaFactory.create_batch(40)
+    AdministraFactory.create_batch(40)
+    cursor.execute("UPDATE dbconnection_cantidadtuplas SET cantidad=40 WHERE nombre_tabla='propietario'")
+    cursor.execute("UPDATE dbconnection_cantidadtuplas SET cantidad=40 WHERE nombre_tabla='comprador'")
+    cursor.execute("UPDATE dbconnection_cantidadtuplas SET cantidad=40 WHERE nombre_tabla='intermediario'")
+    cursor.execute("UPDATE dbconnection_cantidadtuplas SET cantidad=40 WHERE nombre_tabla='propiedad'")
+    cursor.execute("UPDATE dbconnection_cantidadtuplas SET cantidad=40 WHERE nombre_tabla='visita'")
+    cursor.execute("UPDATE dbconnection_cantidadtuplas SET cantidad=40 WHERE nombre_tabla='administra'")
     

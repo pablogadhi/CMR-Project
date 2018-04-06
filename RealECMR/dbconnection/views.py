@@ -10,7 +10,7 @@ from django.db import connection
 from django.forms import formset_factory, BaseFormSet
 from .utilities import *
 from chartit import PivotDataPool, PivotChart
-from django.db.models import Avg
+from django.db.models import Avg, Count
 
 ele_propietario= ['%%',0,'%%']
 ele_comprador= ['%%',0,'%%']
@@ -123,9 +123,6 @@ class PropietarioListView(generic.edit.FormMixin, generic.ListView):
                 if f.is_valid():
                     f.actualizar(self.tabla[count]['id'], self.campos_adicionales, valoresA)
                     return self.form_valid(form)
-                else:
-                    print(count)
-                    print(f.errors)
                 count += 1
             return self.form_invalid(form)
         elif 'deleteFila' in request.POST:
@@ -140,9 +137,6 @@ class PropietarioListView(generic.edit.FormMixin, generic.ListView):
                 if f.is_valid():
                     f.eliminar(self.tabla[count]['id'])
                     return self.form_valid(form)
-                else:
-                    print(count)
-                    print(f.errors)
                 count += 1
             return self.form_invalid(form)
         elif 'filtrar' in request.POST:
@@ -252,9 +246,6 @@ class CompradorListView(generic.edit.FormMixin, generic.ListView):
                 if f.is_valid():
                     f.actualizar(self.tabla[count]['id'], self.campos_adicionales, valoresA)
                     return self.form_valid(form)
-                else:
-                    print(count)
-                    print(f.errors)
                 count += 1
             return self.form_invalid(form)
         elif 'deleteFila' in request.POST:
@@ -269,9 +260,6 @@ class CompradorListView(generic.edit.FormMixin, generic.ListView):
                 if f.is_valid():
                     f.eliminar(self.tabla[count]['id'])
                     return self.form_valid(form)
-                else:
-                    print(count)
-                    print(f.errors)
                 count += 1
             return self.form_invalid(form)
         elif 'filtrar' in request.POST:
@@ -382,9 +370,6 @@ class IntermediarioListView(generic.edit.FormMixin, generic.ListView):
                 if f.is_valid():
                     f.actualizar(self.tabla[count]['id'], self.campos_adicionales, valoresA)
                     return self.form_valid(form)
-                else:
-                    print(count)
-                    print(f.errors)
                 count += 1
             return self.form_invalid(form)
         elif 'deleteFila' in request.POST:
@@ -399,9 +384,6 @@ class IntermediarioListView(generic.edit.FormMixin, generic.ListView):
                 if f.is_valid():
                     f.eliminar(self.tabla[count]['id'])
                     return self.form_valid(form)
-                else:
-                    print(count)
-                    print(f.errors)
                 count += 1
             return self.form_invalid(form)
         elif 'filtrar' in request.POST:
@@ -518,9 +500,6 @@ class PropiedadListView(generic.edit.FormMixin, generic.ListView):
                 if f.is_valid():
                     f.actualizar(self.tabla[count]['id'], self.campos_adicionales, valoresA)
                     return self.form_valid(form)
-                else:
-                    print(count)
-                    print(f.errors)
                 count += 1
             return self.form_invalid(form)
         elif 'deleteFila' in request.POST:
@@ -535,9 +514,6 @@ class PropiedadListView(generic.edit.FormMixin, generic.ListView):
                 if f.is_valid():
                     f.eliminar(self.tabla[count]['id'])
                     return self.form_valid(form)
-                else:
-                    print(count)
-                    print(f.errors)
                 count += 1
             return self.form_invalid(form)
         elif 'filtrar' in request.POST:
@@ -772,7 +748,20 @@ def ChartsView(request):
                 }]
             )
 
-    chart = PivotChart(
+    data2 = PivotDataPool(
+            series=[{
+                'options':{
+                    'source': Intermediario,
+                    'categories':['reputacion'],
+                    },
+                'terms': {
+                    'count_reputacion': Count('reputacion',)
+                    }
+
+                }]
+            )
+
+    chart_1 = PivotChart(
             datasource=data,
             series_options=[{
                 'options':{
@@ -797,4 +786,31 @@ def ChartsView(request):
                     }
                 }
             )
-    return render(request, 'dbconnection/estadisticas.html', context={'chart1': chart})
+
+    chart_2 = PivotChart(
+            datasource=data2,
+            series_options=[{
+                'options':{
+                    'type': 'column',
+                    'stacking': False
+                    },
+                'terms':['count_reputacion']
+                }],
+            chart_options={
+                'title': {
+                    'text': 'Cantidad de Intermediarios por rating'
+                    },
+                'xAxis': {
+                    'title': {
+                        'text': 'Rating'
+                        }
+                    },
+                'yAxis': {
+                    'title': {
+                        'text': 'Cantidad'
+                        }
+                    }
+                }
+            )
+
+    return render(request, 'dbconnection/estadisticas.html', context={'chart_list':[chart_1, chart_2]})

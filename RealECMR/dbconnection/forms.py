@@ -182,6 +182,8 @@ class PropiedadForm(forms.ModelForm):
 
     def eliminar(self, idTupla):
         cursor = connection.cursor()
+        cursor.execute("DELETE FROM dbconnection_visita WHERE propiedad_id=%s", [idTupla])
+        cursor.execute("DELETE FROM dbconnection_administra WHERE propiedad_id=%s", [idTupla])
         cursor.execute("DELETE FROM dbconnection_propiedad WHERE id=%s", [idTupla])
         cursor.execute("DELETE FROM dbconnection_valoresadicionales WHERE id=%s", [idTupla])
 
@@ -276,6 +278,7 @@ class CompradorForm(forms.ModelForm):
 
     def eliminar(self, idTupla):
         cursor = connection.cursor()
+        cursor.execute("DELETE FROM dbconnection_visita WHERE comprador_id=%s", [idTupla])
         cursor.execute("DELETE FROM dbconnection_comprador WHERE id=%s", [idTupla])
         cursor.execute("DELETE FROM dbconnection_valoresadicionales WHERE id=%s", [idTupla])
 
@@ -368,6 +371,11 @@ class PropietarioForm(forms.ModelForm):
 
     def eliminar(self, idTupla):
         cursor = connection.cursor()
+        cursor.execute("SELECT id FROM dbconnection_propiedad WHERE propietario_id=%s", [idTupla])
+        idPropiedad = dictfetchall(cursor)
+        idPropiedad = idPropiedad[0]['id']
+        cursor.execute("DELETE FROM dbconnection_visita WHERE propiedad_id=%s", [idPropiedad])
+        cursor.execute("DELETE FROM dbconnection_administra WHERE propietario_id=%s OR propiedad_id=%s", [idTupla, idPropiedad])
         cursor.execute("DELETE FROM dbconnection_propiedad WHERE propietario_id=%s", [idTupla])
         cursor.execute("DELETE FROM dbconnection_propietario WHERE id=%s", [idTupla])
         cursor.execute("DELETE FROM dbconnection_valoresadicionales WHERE id=%s", [idTupla])
@@ -461,6 +469,11 @@ class IntermediarioForm(forms.ModelForm):
 
     def eliminar(self, idTupla):
         cursor = connection.cursor()
+        cursor.execute("SELECT id FROM dbconnection_propiedad WHERE propietario_id=%s", [idTupla])
+        idPropiedad = dictfetchall(cursor)
+        idPropiedad = idPropiedad[0]['id']
+        cursor.execute("DELETE FROM dbconnection_visita WHERE propiedad_id=%s", [idPropiedad])
+        cursor.execute("DELETE FROM dbconnection_administra WHERE propiedad_id=%s", [idPropiedad])
         cursor.execute("DELETE FROM dbconnection_propiedad WHERE intermediario_id=%s", [idTupla])
         cursor.execute("DELETE FROM dbconnection_intermediario WHERE id=%s", [idTupla])
         cursor.execute("DELETE FROM dbconnection_valoresadicionales WHERE id=%s", [idTupla])
