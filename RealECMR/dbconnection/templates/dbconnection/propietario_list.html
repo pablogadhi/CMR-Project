@@ -42,7 +42,7 @@
             <td>{{propietario.fechainicio}}</td>
             <td>{{propietario.reputacion}}</td>
             <td>{{propietario.direccion}}</td>
-            <td>{{propietario.foto}}</td>
+            <td>{{propietario.foto|genImage}}</td>
             {% for campo in campos_adicionales %}
             <td>{{propietario|extraKeyValue:campo.id}}</td>
             {% endfor %}
@@ -64,7 +64,7 @@
 {% endblock %}
 
 {% block addFilaForm %}
-<form method="post">
+<form enctype="multipart/form-data" method="post">
     {% csrf_token %}
     {{ second_form.as_p }}
     {% for extra in campos_adicionales %}
@@ -77,7 +77,7 @@
 {% endblock %}
 
 {% block updateFilaForm %}
-<form method="post" id="uForm">
+<form enctype="multipart/form-data" method="post" id="uForm">
 </form>
 {% endblock %}
 

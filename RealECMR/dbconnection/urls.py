@@ -6,7 +6,7 @@ urlpatterns = [
     path('propiedades/', views.PropiedadListView.as_view(), name='propiedades'),
     path('compradores/', views.CompradorListView.as_view(), name='compradores'),
     path('intermediarios/', views.IntermediarioListView.as_view(), name='intermediarios'),
-    path('propietarios/', views.PropetarioListView.as_view(), name='propietarios'),
+    path('propietarios/', views.PropietarioListView.as_view(), name='propietarios'),
     # path('propietarios/', views.PropietariosView, name='propietarios'),
 
     path('visitas/', views.VisitaListView.as_view(), name='visitas'),

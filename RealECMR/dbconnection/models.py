@@ -21,7 +21,7 @@ class Cliente(models.Model):
         ('Mala','Mala'),
     )
     reputacion = models.CharField(max_length=10, choices=TIPOREP, blank=True)
-    foto = models.ImageField(null=True, blank=True)
+    foto = models.ImageField(null=True, blank=True, max_length=1000000)
     # def __str__(self):
        # return self.nombre
 
@@ -43,10 +43,10 @@ class Propiedad(models.Model):
         ('Terreno','Terreno'),
         ('Otro','Otro')
     )
-    tipo = models.CharField(max_length=10, choices=TIPOBIEN, blank=True)
+    tipo = models.CharField(max_length=20, choices=TIPOBIEN, blank=True)
     informacion = models.CharField(max_length=500, null=True)
     foto = models.ImageField(null=True, blank=True)
-    tamano = models.DecimalField(decimal_places=2, max_digits=8, default=0.00, null=True)
+    tamano = models.FloatField(default=0.00, null=True)
     
     def __str__(self):
        return str(self.id)

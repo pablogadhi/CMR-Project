@@ -35,13 +35,13 @@ def reset(request):
     resetAllTables(cursor)
     return HttpResponse("Tablas reseteadas!")
 
-class PropetarioListView(generic.edit.FormMixin, generic.ListView):
+class PropietarioListView(generic.edit.FormMixin, generic.ListView):
     """
     Generic class-based view for a list of Propietario.
     """
     cursor = connection.cursor()
     template_name = 'dbconnection/propietario_list.html'
-    paginate_by = 100
+    # paginate_by = 100
     form_class = AgregarCampoForm
     second_form_class = PropietarioForm
 
@@ -106,7 +106,7 @@ class PropetarioListView(generic.edit.FormMixin, generic.ListView):
             data.update({'form-TOTAL_FORMS': self.size,
                         'form-INITIAL_FORMS': self.size,
                         'form-MAX_NUM_FORMS': ''})
-            formset = self.AgregarFormSet(data)
+            formset = self.AgregarFormSet(data, request.FILES)
             count = 0
             form = None
             for f in formset:
@@ -155,7 +155,7 @@ class CompradorListView(generic.edit.FormMixin, generic.ListView):
     """
     cursor = connection.cursor()
     template_name = 'dbconnection/comprador_list.html'
-    paginate_by = 100
+    # paginate_by = 1000
     form_class = AgregarCampoForm
     second_form_class = CompradorForm
 
@@ -270,7 +270,7 @@ class IntermediarioListView(generic.edit.FormMixin, generic.ListView):
     """
     cursor = connection.cursor()
     template_name = 'dbconnection/intermediario_list.html'
-    paginate_by = 100
+    # paginate_by = 100
     form_class = AgregarCampoForm
     second_form_class = IntermediarioForm
 
@@ -384,7 +384,7 @@ class PropiedadListView(generic.edit.FormMixin, generic.ListView):
     """
     cursor = connection.cursor()
     template_name = 'dbconnection/propiedad_list.html'
-    paginate_by = 100
+    # paginate_by = 100
     form_class = AgregarCampoForm
     second_form_class = PropiedadForm
 
@@ -413,8 +413,11 @@ class PropiedadListView(generic.edit.FormMixin, generic.ListView):
         return reverse('propiedades')
 
     def get_context_data(self, **kwargs):
+        self.cursor.execute('SELECT * FROM dbconnection_intermediario ORDER BY id')
+        intermediarios = dictfetchall(self.cursor)
         self.object_list = self.get_queryset()
         context = super().get_context_data(**kwargs)
+        context['intermediarios_list'] = intermediarios
         context['campos_adicionales'] = self.campos_adicionales
         context['form'] = self.get_form()
         context['second_form'] = self.get_form(self.get_second_form_class())

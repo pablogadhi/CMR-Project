@@ -2,6 +2,7 @@ from django import forms
 from django.db import connection
 from .models import *
 from .utilities import dictfetchall
+import base64
 
 
 class AgregarCampoForm(forms.Form):
@@ -232,12 +233,12 @@ class PropietarioForm(forms.ModelForm):
         telefono = data.get("telefono")
         mail = data.get("mail")
         cuenta = None
-        fechaInicio = data.get("fechaInicio")
-        reputacion = 'Normal'
-        foto = None
+        fechaInicio = data.get("fechainicio")
+        reputacion = data.get('reputacion')
+        foto = data.get("foto")
         direccion = data.get("direccion")
 
-        cursor.execute("INSERT INTO dbconnection_intermediario VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
+        cursor.execute("INSERT INTO dbconnection_propietario VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
                         [id, activo, nombre, sexo, edad, telefono, mail, cuenta, fechaInicio, reputacion, foto, direccion])
         cursor.execute("UPDATE dbconnection_cantidadtuplas SET cantidad=%s WHERE nombre_tabla=%s", [id+1, 'propietario'])
 
@@ -266,12 +267,15 @@ class PropietarioForm(forms.ModelForm):
         telefono = data.get("telefono")
         mail = data.get("mail")
         cuenta = None
-        fechaInicio = data.get("fechaInicio")
+        fechaInicio = data.get("fechainicio")
         reputacion = 'Normal'
-        foto = None
+        foto = (data.get('foto'))
+        foto = (foto.file).getvalue()
+        foto = base64.b64encode(foto)
+        print(foto)
         direccion = data.get("direccion")
 
-        cursor.execute("UPDATE dbconnection_intermediario SET id=%s, activo=%s, nombre=%s, sexo=%s, edad=%s, telefono=%s, mail=%s, cuenta=%s, fechainicio=%s, reputacion=%s, foto=%s, direccion=%s WHERE id=%s",
+        cursor.execute("UPDATE dbconnection_propietario SET id=%s, activo=%s, nombre=%s, sexo=%s, edad=%s, telefono=%s, mail=%s, cuenta=%s, fechainicio=%s, reputacion=%s, foto=%s, direccion=%s WHERE id=%s",
                         [idTupla, activo, nombre, sexo, edad, telefono, mail, cuenta, fechaInicio, reputacion, foto, direccion, idTupla])
 
         for campo in camposAdicionales:

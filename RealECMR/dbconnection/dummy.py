@@ -2,6 +2,8 @@ from .models import *
 import random
 from django.db import models
 import factory
+from django.db import connection
+from .utilities import resetAllTables
 
 def randomSex():
     sexos = ['Femenino', 'Masculino']
@@ -86,7 +88,28 @@ class IntermediarioFactory(factory.django.DjangoModelFactory):
     comision = factory.LazyFunction(randomPercentage)
     experiencia = factory.LazyFunction(randomExp)
 
+class PropiedadFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Propiedad
+    id = factory.Sequence(lambda n: '%i' % n) 
+    propietario = factory.Iterator(Propietario.objects.all())
+    intermediario = factory.Iterator(Intermediario.objects.all())
+    direccion = factory.Faker('address', 'es_MX')
+    valuacion = factory.Faker('pyfloat')
+    tipo = factory.LazyFunction(randomTipoBien)
+    informacion = factory.Faker('paragraph', 'es_MX')
+    foto = None
+    tamano = factory.Faker('pyfloat')
+
 def generateDummy():
-    PropietarioFactory.create_batch(100)
-    CompradorFactory.create_batch(100)
-    IntermediarioFactory.create_batch(100)
+    cursor = connection.cursor()
+    resetAllTables(cursor)
+    PropietarioFactory.create_batch(10)
+    CompradorFactory.create_batch(10)
+    IntermediarioFactory.create_batch(10)
+    PropiedadFactory.create_batch(10)
+    cursor.execute("UPDATE dbconnection_cantidadtuplas SET cantidad=10 WHERE nombre_tabla='propietario'")
+    cursor.execute("UPDATE dbconnection_cantidadtuplas SET cantidad=10 WHERE nombre_tabla='comprador'")
+    cursor.execute("UPDATE dbconnection_cantidadtuplas SET cantidad=10 WHERE nombre_tabla='intermediario'")
+    cursor.execute("UPDATE dbconnection_cantidadtuplas SET cantidad=10 WHERE nombre_tabla='propiedad'")
+    
