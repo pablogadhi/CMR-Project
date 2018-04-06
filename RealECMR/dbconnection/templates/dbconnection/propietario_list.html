@@ -42,7 +42,7 @@
             <td>{{propietario.fechainicio}}</td>
             <td>{{propietario.reputacion}}</td>
             <td>{{propietario.direccion}}</td>
-            <td>{{propietario.foto|genImage}}</td>
+            <td>{{propietario.foto}}</td>
             {% for campo in campos_adicionales %}
             <td>{{propietario|extraKeyValue:campo.id}}</td>
             {% endfor %}

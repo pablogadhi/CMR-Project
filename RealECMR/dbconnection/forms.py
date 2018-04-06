@@ -325,7 +325,8 @@ class PropietarioForm(forms.ModelForm):
         cuenta = None
         fechaInicio = data.get("fechainicio")
         reputacion = data.get('reputacion')
-        foto = data.get("foto")
+        # foto = data.get("foto")
+        foto = None
         direccion = data.get("direccion")
 
         cursor.execute("INSERT INTO dbconnection_propietario VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
@@ -359,8 +360,9 @@ class PropietarioForm(forms.ModelForm):
         cuenta = None
         fechaInicio = data.get("fechainicio")
         reputacion = 'Normal'
-        foto = (data.get('foto'))
-        foto = str((foto.file).getvalue())
+        foto = None
+        # foto = (data.get('foto'))
+        # foto = str((foto.file).getvalue())
         # foto = str(base64.b64encode(foto))
         # print(foto)
         direccion = data.get("direccion")

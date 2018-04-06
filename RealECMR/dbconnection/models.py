@@ -39,7 +39,7 @@ class Propiedad(models.Model):
     propietario = models.ForeignKey('Propietario', on_delete=models.CASCADE, default=0)
     intermediario = models.ForeignKey('Intermediario', on_delete=models.CASCADE, default=0)
     direccion = models.CharField(max_length=200, null=True)
-    valuacion = models.FloatField(default=0.0)
+    valuacion = models.DecimalField(max_digits=15, decimal_places=2, default=0.0)
     TIPOBIEN = (
         ('Apartamento','Apartamento'),
         ('Casa','Casa'),
@@ -49,7 +49,7 @@ class Propiedad(models.Model):
     tipo = models.CharField(max_length=20, choices=TIPOBIEN, blank=True)
     informacion = models.CharField(max_length=500, null=True)
     foto = models.ImageField(null=True, blank=True)
-    tamano = models.FloatField(default=0.00, null=True)
+    tamano = models.DecimalField(max_digits=15, decimal_places=2, default=0.00, null=True)
     
     def __str__(self):
        return str(self.id)
@@ -66,7 +66,7 @@ class Comprador(Cliente):
         ('Otro','Otro')
     )
     tipopropiedad = models.CharField(max_length=20, choices=TIPOBIEN, blank=True)
-    presupuesto = models.FloatField(default=0.0)
+    presupuesto = models.DecimalField(default=0.0, decimal_places=2, max_digits=15)
 
 class Intermediario(Cliente):
     comision = models.DecimalField(decimal_places=2, max_digits=8, default=0.00)
