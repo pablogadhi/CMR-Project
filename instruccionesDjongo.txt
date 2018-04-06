@@ -1,0 +1,10 @@
+primero: pip3 install djongo 
+
+yo tengo una bd con nombre "tweets" creada en Mongo (no sé si la creará sola la verdad)
+
+segundo: python manage.py makemigrations
+tercero: python manage.py migrate --database Twengo
+
+Estos dos generan colecciones en django donde se guardan los tweets 
+
+De ahí ya runserver

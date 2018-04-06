@@ -81,10 +81,10 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'realedb',
-        'USER': 'postgres',
-        'PASSWORD': 'invalido1234',
+        'USER': 'uvg',
+        'PASSWORD': 'compumasterrace',
         'HOST': '127.0.0.1',
-        'PORT': '5433',
+        'PORT': '5432',
     },
     'Twengo': {
         'ENGINE' : 'djongo',
