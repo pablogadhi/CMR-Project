@@ -13,7 +13,7 @@ from .utilities import *
 ele_propietario= ['%%',0,'%%']
 ele_comprador= ['%%',0,'%%']
 ele_propiedad= ['%%',0,'%%']
-ele_intermediario=['%%',0,0]
+ele_intermediario=['%%',9999,0]
 
 
 def index(request):
@@ -441,7 +441,7 @@ class PropiedadListView(generic.edit.FormMixin, generic.ListView):
     third_form_class = FilPropiedadForm
 
     def __init__(self):
-        self.cursor.execute("SELECT * FROM dbconnection_propiedad WHERE valuacion<%s AND tipo like %s ORDER BY id",[ele_propiedad[1],'%'+ele_propiedad[0]+'%'])
+        self.cursor.execute("SELECT * FROM dbconnection_propiedad WHERE valuacion<%s AND tipo lIKE %s ORDER BY id",[ele_propiedad[1],'%'+ele_propiedad[2]+'%'])
         self.tabla = dictfetchall(self.cursor)
         self.cursor.execute(
             "SELECT * FROM dbconnection_camposadicionales as ca WHERE ca.tabla = 0")

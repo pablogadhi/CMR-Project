@@ -82,8 +82,9 @@ class FilIntermediariosForm(forms.Form):
 
 class FilPropiedadForm(forms.Form):
     intermediario = forms.CharField(max_length=50, required=False)
-    valuacion = forms.FloatField(widget=forms.TextInput, required=False, initial='0')
+    valuacion = forms.FloatField(widget=forms.TextInput, required=False, initial='9999')
     TIPOBIEN = (
+        ('',''),
         ('Apartamento','Apartamento'),
         ('Casa','Casa'),
         ('Terreno','Terreno'),
