@@ -82,6 +82,9 @@ class Tweet(models.Model):
     id = models.AutoField(primary_key=True)
     cuenta = models.CharField(max_length=50, null=True)
     texto = models.CharField(max_length=50, null=True)
+    
+    class Meta:
+        app_label = 'mongoDBrout'
 
 class Administra(models.Model):
     id = models.AutoField(primary_key=True)

@@ -38,7 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'dbconnection.apps.DbconnectionConfig',
-    'chartit'
+    'chartit',
+    'mongoDBrout'
 ]
 
 MIDDLEWARE = [
@@ -74,15 +75,20 @@ WSGI_APPLICATION = 'RealECMR.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
+DATABASE_ROUTERS = ['RealECMR.router.MongoRouter']
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'realedb',
-        'USER': 'uvg',
-        'PASSWORD': 'compumasterrace',
+        'USER': 'postgres',
+        'PASSWORD': 'invalido1234',
         'HOST': '127.0.0.1',
-        'PORT': '5432',
+        'PORT': '5433',
+    },
+    'Twengo': {
+        'ENGINE' : 'djongo',
+        'NAME' : 'tweets'
     }
 }
 
