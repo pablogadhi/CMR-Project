@@ -28,8 +28,8 @@
                 <button type="button" class="btn btn-secondary updateB" data-toggle="modal" data-target="#updateModal">{{propiedad.id}}</button>
             </td>
             <td>{{propiedad.direccion}}</td>
-            <td>{{propiedad.propietario_id}}</td>
-            <td>{{propiedad.intermediario_id}}</td>
+            <td>{{propietarios_list|getName:propiedad.propietario_id}}</td>
+            <td>{{intermediarios_list|getName:propiedad.intermediario_id}}</td>
             <td>{{propiedad.tipo}}</td>
             <td>{{propiedad.tamano}}</td>
             <td>{{propiedad.valuacion}}</td>

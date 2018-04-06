@@ -81,8 +81,8 @@ class FilIntermediariosForm(forms.Form):
         return sexo,comision,experiencia
 
 class FilPropiedadForm(forms.Form):
-    intermediario = forms.CharField(max_length=50, required=False)
-    valuacion = forms.FloatField(widget=forms.TextInput, required=False, initial='9999')
+    direccion = forms.CharField(max_length=50, required=False)
+    valuacion = forms.FloatField(widget=forms.TextInput, required=False, initial='0')
     TIPOBIEN = (
         ('',''),
         ('Apartamento','Apartamento'),
@@ -94,10 +94,10 @@ class FilPropiedadForm(forms.Form):
 
     def filtrar(self):
         data= self.cleaned_data
-        intermediario = data.get('intermediario')
+        direccion = data.get('direccion')
         valuacion = data.get('valuacion')
         tipo = data.get('tipo')
-        return intermediario,valuacion,tipo
+        return direccion,valuacion,tipo
 
 class PropiedadForm(forms.ModelForm):
     class Meta:
