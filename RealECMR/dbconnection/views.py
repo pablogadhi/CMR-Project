@@ -9,6 +9,8 @@ from django.urls import reverse
 from django.db import connection
 from django.forms import formset_factory, BaseFormSet
 from .utilities import *
+from chartit import PivotDataPool, PivotChart
+from django.db.models import Avg
 
 ele_propietario= ['%%',0,'%%']
 ele_comprador= ['%%',0,'%%']
@@ -595,3 +597,45 @@ class PropiedadDetailView(generic.ListView):
     """
     model = Propiedad
 
+
+def ChartsView(request):
+    data = PivotDataPool(
+            series=[{
+                'options':{
+                    'source': Intermediario,
+                    'categories':['edad'],
+                    'legend_by': 'reputacion',
+                    },
+                'terms': {
+                    'avg_experiencia': Avg('experiencia',)
+                    }
+
+                }]
+            )
+
+    chart = PivotChart(
+            datasource=data,
+            series_options=[{
+                'options':{
+                    'type': 'column',
+                    'stacking': True
+                    },
+                'terms':['avg_experiencia']
+                }],
+            chart_options={
+                'title': {
+                    'text': 'Promedio de experiencia vs edad de los Intermediarios por reputacion'
+                    },
+                'xAxis': {
+                    'title': {
+                        'text': 'Edad'
+                        }
+                    },
+                'yAxis': {
+                    'title': {
+                        'text': 'Experiencia'
+                        }
+                    }
+                }
+            )
+    return render(request, 'dbconnection/estadisticas.html', context={'chart1': chart})
