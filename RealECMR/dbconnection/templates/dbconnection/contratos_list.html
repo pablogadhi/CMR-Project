@@ -1,0 +1,48 @@
+{% extends "base_generic.html" %}
+{% load dbfilters %}
+
+{% block content %}
+<h1>Contratos</h1>
+Perfil de cada intermediario segun las propiedades que ofrece
+<hr>
+{% if object_list %}
+<ul>
+  {% regroup object_list by intermediario_id as intermediario_list%}
+  <ul>
+  {% for intermediario in intermediario_list%}
+      <hr>
+      <li>
+        {{intermediarios_list|getName:intermediario.grouper}}
+        con <b><i>{{intermediario.list.0.experiencia}}</i></b> años de experiencia,
+        ofrece <b><i>{{intermediario.list|length}}</i></b> bienes
+        <hr>
+      <ul>
+      
+      <table>
+        <tr>
+          <th>Propiedad</th>
+          <th>Propietario</th>
+          <th>Valuacion</th>
+          <th>Comision</th>
+          <th>Ganancia</th>
+        </tr> 
+        {% for contrato in intermediario.list %}
+        <tr>
+          <td>{{contrato.id}}</td>
+          <td>{{propietarios_list|getName:contrato.propietario_id}}</td>
+          <td>{{contrato.valuacion}}</td>
+          <td>{{contrato.comision}}</td>
+          <td>{{contrato.ganancia}}</td>
+        </tr>
+        {% endfor %}
+      </table>
+    
+    </ul>
+    </li>
+  {% endfor %}
+
+  </ul>
+{% else %}
+  <p>No hay interacciones.</p>
+{% endif %}       
+{% endblock %}

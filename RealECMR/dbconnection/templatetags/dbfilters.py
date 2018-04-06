@@ -47,4 +47,32 @@ def getName(objectList, objectID):
         if obj['id'] == objectID:
             return obj['nombre']
     return None
+
+@register.filter
+def getTipo(objectList, objectID):
+    for obj in objectList:
+        if obj['id'] == objectID:
+            return obj['tipo']
+    return None
+
+@register.filter
+def getDireccion(objectList, objectID):
+    for obj in objectList:
+        if obj['id'] == objectID:
+            return obj['direccion']
+    return None
+
+@register.filter
+def getIntermediario(objectList, objectID):
+    for obj in objectList:
+        if obj['id'] == objectID:
+            return obj['intermediario_id']
+    return None
+
+@register.filter
+def getTamano(objectList, objectID):
+    for obj in objectList:
+        if obj['id'] == objectID:
+            return obj['tamano']
+    return None
     

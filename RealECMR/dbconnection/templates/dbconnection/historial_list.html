@@ -1,0 +1,43 @@
+{% extends "base_generic.html" %}
+{% load dbfilters %}
+
+{% block content %}
+<h1>Historial</h1>
+Calendario sobre cuando se han agregado propiedades al sistema
+<hr>
+{% if object_list %}
+<ul>
+  {% regroup object_list by fecha as fecha_list %}
+  <ul>
+  {% for fecha in fecha_list%}
+      <hr>
+      <li>
+        {{fecha.grouper}}
+        <hr>
+      <ul>
+      <table>
+        <tr>
+          <th>propietario</th>
+          <th>propiedad</th>
+          <th>lugar</th>
+          <th>tamano</th>
+        </tr> 
+        {% for elemento in fecha.list %}
+        <tr>
+          <td>{{propietarios_list|getName:elemento.propietario_id}}</td>
+          <td>{{elemento.propiedad_id}}</td>
+          <td>{{propiedades_list|getDireccion:elemento.propiedad_id}}</td>
+          <td>{{propiedades_list|getTamano:elemento.propiedad_id}}</td>
+        </tr>
+        {% endfor %}
+      </table>
+    
+    </ul>
+    </li>
+  {% endfor %}
+
+  </ul>
+{% else %}
+  <p>No hay interacciones.</p>
+{% endif %}       
+{% endblock %}

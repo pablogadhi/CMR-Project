@@ -1,0 +1,45 @@
+{% extends "base_generic.html" %}
+{% load dbfilters %}
+
+{% block content %}
+<h1>Posesiones por propietarios</h1>
+A continuacion se muestra una lista de los bienes que posee cada propietario
+<hr>
+{% if object_list %}
+<ul>
+  {% regroup object_list by propietario_id as propietario_list%}
+  <ul>
+  {% for propietario in propietario_list%}
+      <hr>
+      <li>
+        {{propietarios_list|getName:propietario.grouper}}
+        posee <i><b>{{propietario.list|length}}</i></b> bienes
+        <hr>
+      <ul>
+      
+      <table>
+        <tr>
+          <th>Propiedad</th>
+          <th>Intermediario</th>
+          <th>Tipo</th>
+          <th>Valuacion</th>
+        </tr> 
+        {% for admini in propietario.list %}
+        <tr>
+          <td>{{admini.id}}</td>
+          <td>{{intermediarios_list|getName:admini.intermediario_id}}</td>
+          <td>{{admini.tipo}}</td>
+          <td>{{admini.valuacion}}</td>
+        </tr>
+        {% endfor %}
+      </table>
+    
+    </ul>
+    </li>
+  {% endfor %}
+
+  </ul>
+{% else %}
+  <p>No hay interacciones.</p>
+{% endif %}       
+{% endblock %}

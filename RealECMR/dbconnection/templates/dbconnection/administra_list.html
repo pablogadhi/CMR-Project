@@ -1,30 +1,44 @@
 {% extends "base_generic.html" %}
+{% load dbfilters %}
 
 {% block content %}
-    <h1>Adminsitracion</h1>
-    <hr>
-    {% if administra_list %}
-    <ul>
+<h1>Administracion</h1>
+Catalogo de intermediarios segun su reputación
+<hr>
+{% if object_list %}
+<ul>
+  {% regroup object_list by reputacion as reputacion_list%}
+  <ul>
+  {% for reputacion in reputacion_list%}
+      <hr>
+      <li>
+        {{reputacion.grouper}}
+        <hr>
+      <ul>
+      
       <table>
         <tr>
-          <th>ID</th>
-          <th>Propietario</th>
-          <th>Propiedad</th>
-          <th>Administrador</th>
-          <th>Fecha</th>
-        </tr>
-      {% for interaccion in administra_list %}
+          <th>id</th>
+          <th>Nombre</th>
+          <th>Experiencia</th>
+          <th>Comision</th>
+        </tr> 
+        {% for intermediario in reputacion.list %}
         <tr>
-          <td>{{interaccion.id}}</td>
-          <td>{{interaccion.comprador}}</td>
-          <td>{{interaccion.propiedad}}</td>
-          <td>{{interaccion.intermediario}}</td>
-          <td>{{interaccion.fecha}}</td>
+          <td>{{intermediario.id}}</td>
+          <td>{{intermediario.nombre}}</td>
+          <td>{{intermediario.experiencia}} años</td>
+          <td>{{intermediario.comision}} %</td>
         </tr>
-      {% endfor %}
+        {% endfor %}
       </table>
+    
     </ul>
-    {% else %}
-      <p>No hay interacciones.</p>
-    {% endif %}       
+    </li>
+  {% endfor %}
+
+  </ul>
+{% else %}
+  <p>No hay interacciones.</p>
+{% endif %}       
 {% endblock %}

@@ -571,16 +571,175 @@ class VisitaListView(generic.ListView):
     """
     Generic class-based view for a list of Propietario.
     """
-    model = Visita
+    #model = Visita
+    cursor = connection.cursor()
+    template_name = 'dbconnection/visita_list.html'
     paginate_by = 100
 
+    def __init__(self):
+        self.cursor.execute("SELECT * FROM dbconnection_visita ORDER BY comprador_id, fecha")
+        self.tabla = dictfetchall(self.cursor)
+        self.size = len(self.tabla)
 
-class AdministraListView(generic.ListView):
+    def get_success_url(self):
+        return reverse('visitas')
+
+    def get_context_data(self, **kwargs):
+        self.object_list = self.get_queryset()
+        context = super().get_context_data(**kwargs)
+        self.cursor.execute("SELECT * FROM dbconnection_propiedad")
+        context['propiedades_list'] = dictfetchall(self.cursor)
+        self.cursor.execute("SELECT * FROM dbconnection_comprador")
+        context['compradores_list'] = dictfetchall(self.cursor)
+        self.cursor.execute("SELECT * FROM dbconnection_intermediario")
+        context['intermediarios_list'] = dictfetchall(self.cursor)
+        return context
+
+    def get_queryset(self):
+        return self.tabla
+
+    def form_valid(self, form):
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        print("Invalid Form!")
+        return super().form_invalid(form)
+
+
+class PoseeListView(generic.ListView):
     """
     Generic class-based view for a list of Propietario.
     """
-    model = Administra
+    #model = Administra
     paginate_by = 100
+    cursor = connection.cursor()
+    template_name = 'dbconnection/posee_list.html'
+    paginate_by = 100
+
+    def __init__(self):
+        self.cursor.execute("SELECT * FROM dbconnection_propiedad ORDER BY propietario_id")
+        self.tabla = dictfetchall(self.cursor)
+        self.size = len(self.tabla)
+
+    def get_success_url(self):
+        return reverse('posee')
+
+    def get_context_data(self, **kwargs):
+        self.object_list = self.get_queryset()
+        context = super().get_context_data(**kwargs)
+        self.cursor.execute("SELECT * FROM dbconnection_propietario")
+        context['propietarios_list'] = dictfetchall(self.cursor)
+        self.cursor.execute("SELECT * FROM dbconnection_intermediario")
+        context['intermediarios_list'] = dictfetchall(self.cursor)
+        return context
+
+    def get_queryset(self):
+        return self.tabla
+
+    def form_valid(self, form):
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        print("Invalid Form!")
+        return super().form_invalid(form)
+
+class ContratoListView(generic.ListView):
+    """
+    Generic class-based view for a list of Propietario.
+    """
+    #model = Administra
+    
+    cursor = connection.cursor()
+    template_name = 'dbconnection/contratos_list.html'
+
+    def __init__(self):
+        self.cursor.execute("SELECT p.id, p.propietario_id, p.intermediario_id, i.experiencia ,p.valuacion, i.comision, p.valuacion*i.comision*.01 as ganancia FROM dbconnection_propiedad as p, dbconnection_intermediario as i where p.intermediario_id=i.id ORDER BY p.intermediario_id")
+        self.tabla = dictfetchall(self.cursor)
+        self.size = len(self.tabla)
+
+    def get_success_url(self):
+        return reverse('contratos')
+
+    def get_context_data(self, **kwargs):
+        self.object_list = self.get_queryset()
+        context = super().get_context_data(**kwargs)
+        self.cursor.execute("SELECT * FROM dbconnection_propietario")
+        context['propietarios_list'] = dictfetchall(self.cursor)
+        self.cursor.execute("SELECT * FROM dbconnection_intermediario")
+        context['intermediarios_list'] = dictfetchall(self.cursor)
+        return context
+
+    def get_queryset(self):
+        return self.tabla
+
+    def form_valid(self, form):
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        print("Invalid Form!")
+        return super().form_invalid(form)
+
+class HistorialListView(generic.ListView):
+    cursor = connection.cursor()
+    template_name = 'dbconnection/historial_list.html'
+
+    def __init__(self):
+        self.cursor.execute("SELECT * FROM dbconnection_administra as a ORDER BY a.fecha")
+        self.tabla = dictfetchall(self.cursor)
+        self.size = len(self.tabla)
+
+    def get_success_url(self):
+        return reverse('historial')
+
+    def get_context_data(self, **kwargs):
+        self.object_list = self.get_queryset()
+        context = super().get_context_data(**kwargs)
+        self.cursor.execute("SELECT * FROM dbconnection_propiedad")
+        context['propiedades_list'] = dictfetchall(self.cursor)
+        self.cursor.execute("SELECT * FROM dbconnection_propietario")
+        context['propietarios_list'] = dictfetchall(self.cursor)
+        return context
+
+    def get_queryset(self):
+        return self.tabla
+
+    def form_valid(self, form):
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        print("Invalid Form!")
+        return super().form_invalid(form)
+
+class AdministraListView(generic.ListView):
+    cursor = connection.cursor()
+    template_name = 'dbconnection/administra_list.html'
+
+    def __init__(self):
+        self.cursor.execute("SELECT * FROM dbconnection_intermediario as i ORDER BY i.reputacion")
+        self.tabla = dictfetchall(self.cursor)
+        self.size = len(self.tabla)
+
+    def get_success_url(self):
+        return reverse('administra')
+
+    def get_context_data(self, **kwargs):
+        self.object_list = self.get_queryset()
+        context = super().get_context_data(**kwargs)
+        self.cursor.execute("SELECT * FROM dbconnection_propietario")
+        context['propietarios_list'] = dictfetchall(self.cursor)
+        self.cursor.execute("SELECT * FROM dbconnection_intermediario")
+        context['intermediarios_list'] = dictfetchall(self.cursor)
+        return context
+
+    def get_queryset(self):
+        return self.tabla
+
+    def form_valid(self, form):
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        print("Invalid Form!")
+        return super().form_invalid(form)
 
 class TweetListView(generic.ListView):
     """

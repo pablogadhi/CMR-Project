@@ -1,40 +1,48 @@
 {% extends "base_generic.html" %}
+{% load dbfilters %}
 
 {% block content %}
-    <h1>Visitas por comprador</h1>
-    <hr>
-    {% if visita_list %}
-    {{visita_list}}
-    <ul>
+<h1>Visitas por comprador</h1>
+A continuación se muestra cada visita que ha realizado los compradores.
+<hr>
+{% if object_list %}
+<ul>
+  {% regroup object_list by comprador_id as comprador_list%}
+  <ul>
+  {% for comprador in comprador_list%}
+      <hr>
+      <li>
+        {{compradores_list|getName:comprador.grouper}}
+        ha realizado <b><i>{{comprador.list|length}}</i></b> visitas
+        desde <b><i>{{comprador.list.0.fecha}}</i></b>
+        <hr>
+      <ul>
       <table>
         <tr>
-          <th>Comprador</th>
-          <td>fecha</th>
-          <td>Propiedad</th>
-          <td>Atendido por:</th>
-        </tr>
-      {% regroup visita_list by comprador_nombre as comprador_list%}
-      {% for comprador in comprador_list %}
+          <th>Fecha</th>
+          <th>Propiedad</th>
+          <th>Tipo</th>
+          <th>Direccion</th>
+        </tr> 
+        {% for visita in comprador.list %}
         <tr>
-            <th rowspan="3">{{comprador.grouper}}
-              <ul>
-                <li>holis </li>
-              </ul>
-            </th>
+          <td>{{visita.fecha}}</td>
+          <td>{{visita.propiedad_id}}</td>
+          <td>{{propiedades_list|getTipo:visita.propiedad_id}}</td>
+          <td>{{propiedades_list|getDireccion:visita.propiedad_id}}</td>
         </tr>
-        {% for visita in comprador.list%}
-          <tr>
-            <td>{{visita.fecha}}<td>
-            
-          </tr>  
         {% endfor %}
-      {% endfor %}
-
       </table>
-      {% else %}
-      <p>No hay visitas.</p>
-    {% endif %}      
+    
     </ul>
+    </li>
+  {% endfor %}
+
+  </ul>
+  {% else %}
+  <p>No hay visitas.</p>
+{% endif %}      
+</ul>
     
           
 {% endblock %}

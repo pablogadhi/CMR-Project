@@ -71,7 +71,16 @@
                             <a href="{% url 'visitas' %}">Mostrar Visitas</a>
                         </li>
                         <li>
-                            <a href="{% url 'administraciones' %}">Adminsitracion</a>
+                            <a href="{% url 'posee' %}">Mostrar posesiones</a>
+                        </li>
+                        <li>
+                            <a href="{% url 'administraciones' %}">Administracion</a>
+                        </li>
+                        <li>
+                            <a href="{% url 'contratos' %}">Contratos</a>
+                        </li>
+                        <li>
+                            <a href="{% url 'historial' %}">Mostrar Historial</a>
                         </li>
                         <li>
                             <a href="{% url 'tweets' %}">Mostrar Tweets</a>
@@ -83,7 +92,7 @@
 
                     <p></p>
 
-                    {% if request.path != "/dbconnection/" and request.path != "/dbconnection/visitas/" %}
+                    {% if request.path != "/dbconnection/" and request.path != "/dbconnection/visitas/" and request.path != "/dbconnection/administracion/" and request.path != "/dbconnection/contratos/" and request.path != "/dbconnection/posee/" and request.path != "/dbconnection/historial/"%}
 
                     <!-- Button trigger modal -->
                     <button id="addFilaB" type="button" class="btn btn-primary" data-toggle="modal" data-target="#filaAModal">
