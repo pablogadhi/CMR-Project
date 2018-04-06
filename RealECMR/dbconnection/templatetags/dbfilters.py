@@ -34,3 +34,17 @@ def extraValues(objectList, camposAdicionales):
                 propDict[cId] = ''
         arr.append(propDict)
     return(arr)
+
+@register.filter
+def genImage(imageData):
+    data_uri = imageData.replace('\n', '')
+    img_tag = '<img src="data:image/png;base64,{0}"/>'.format(data_uri)
+    return img_tag
+
+@register.filter
+def getName(objectList, objectID):
+    for obj in objectList:
+        if obj['id'] == objectID:
+            return obj['nombre']
+    return None
+    
